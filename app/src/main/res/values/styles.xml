@@ -7,16 +7,4 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
-        <style name="FondoBarraPersonalizada">
-            <item name="android:background">#F5F5E9</item>
-        </style>
-
-        <style name="TemaPersonalizado" parent="android:Theme">
-            <item name="android:windowTitleSize">40dip</item>
-            <item name="android:windowTitleBackgroundStyle">@style/FondoBarraPersonalizada</item>
-        </style>
-
-
-
 </resources>
