@@ -1,3 +1,17 @@
 <resources>
-    <string name="app_name">Code2Chart</string>
+    <string name="app_name">Navigation Drawer Example</string>
+    <string-array name="nombres">
+        <item>Mario</item>
+        <item>Vieja</item>
+        <item>Jorge</item>
+        <item>Marta</item>
+        <item>Carlos</item>
+        <item>Raul</item>
+        <item>Ricardo</item>
+        <item>Papusinsky</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_websearch">Web search</string>
+    <string name="app_not_available">Sorry, there\'s no web browser available</string>
 </resources>
