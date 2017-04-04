@@ -2,11 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.proyectofinal.code2chart">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@mipmap/logosmall"
+        android:label="Code2Chart"
+        android:logo="@mipmap/logosmall"
+        android:roundIcon="@mipmap/logosmall"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
@@ -17,5 +20,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
