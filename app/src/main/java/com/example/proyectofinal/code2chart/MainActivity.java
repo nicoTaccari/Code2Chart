@@ -6,6 +6,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.AndroidCharacter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,9 +20,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //atributos para el drawer nav panel
     private String[] pruebas;
     private DrawerLayout drawerLayout;
     private ListView listView;
+    private android.support.v7.app.ActionBarDrawerToggle actionBarDrawerToggle;
+    private CharSequence title;
+    private CharSequence drawertitle;
+
     private List<String> item = new ArrayList<String>();
     private ListView listaDeArchivos;
 
@@ -30,15 +36,47 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        title = drawertitle = getTitle();
         pruebas = getResources().getStringArray(R.array.nombres);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         listView = (ListView) findViewById(R.id.left_drawer);
 
-        //listView.setAdapter(new ArrayAdapter<String>(this,R.layout., pruebas));
-        // Set the list's click listener
+        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, R.layout.item_prueba, pruebas);
+        listView.setAdapter(itemsAdapter);
+        // seteo de listeners para los botones del menu lateral
         listView.setOnItemClickListener(new DrawerItemClickListener());
 
-        File nuevaCarpeta = new File(getFilesDir(), "Code2Chart");
+        actionBarDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                R.string.drawer_open,
+                R.string.drawer_close
+        ) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+                /*public void onDrawerClosed(View view) {
+                    super.onDrawerClosed(view);
+                    getActionBar().setTitle(title);
+                }
+
+                /** Called when a drawer has settled in a completely open state. */
+                /*public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    getActionBar().setTitle(drawertitle);
+                }*/
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        //getActionBar().setHomeButtonEnabled(true);
+
+
+
+
+
+        /*File nuevaCarpeta = new File(getFilesDir(), "Code2Chart");
         if(!nuevaCarpeta.exists()) {
             nuevaCarpeta.mkdirs();
         } else {
@@ -77,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 setResult(RESULT_OK, data);
 
             }
-        });
+        });*/
 
     }
 

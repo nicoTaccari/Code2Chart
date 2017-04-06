@@ -7,7 +7,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logosmall"
-        android:label="Code2Chart"
+        android:label="@string/Code2Chart"
         android:logo="@mipmap/logosmall"
         android:roundIcon="@mipmap/logosmall"
         android:supportsRtl="true"
