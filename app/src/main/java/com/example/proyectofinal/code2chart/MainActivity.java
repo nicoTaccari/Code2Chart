@@ -1,12 +1,15 @@
 package com.example.proyectofinal.code2chart;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.AndroidCharacter;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -45,35 +48,69 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(itemsAdapter);
         // seteo de listeners para los botones del menu lateral
         listView.setOnItemClickListener(new DrawerItemClickListener());
+        //hasta aca testeado
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         actionBarDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
                 this,
                 drawerLayout,
+                toolbar,
                 R.string.drawer_open,
                 R.string.drawer_close
         ) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-                /*public void onDrawerClosed(View view) {
-                    super.onDrawerClosed(view);
-                    getActionBar().setTitle(title);
-                }
+            /**
+             * Called when a drawer has settled in a completely closed state.
+             */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(title);
+            }
 
-                /** Called when a drawer has settled in a completely open state. */
-                /*public void onDrawerOpened(View drawerView) {
-                    super.onDrawerOpened(drawerView);
-                    getActionBar().setTitle(drawertitle);
-                }*/
+            /**
+             * Called when a drawer has settled in a completely open state.
+             */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(drawertitle);
+            }
         };
-
-        // Set the drawer toggle as the DrawerListener
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        //getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
 
+    }
 
+    // Set the drawer toggle as the DrawerListener
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        // Handle your other action bar items...
+
+        return super.onOptionsItemSelected(item);
+        }
 
 
         /*File nuevaCarpeta = new File(getFilesDir(), "Code2Chart");
@@ -119,4 +156,3 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-}
