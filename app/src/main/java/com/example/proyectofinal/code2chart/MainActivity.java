@@ -48,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(itemsAdapter);
         // seteo de listeners para los botones del menu lateral
         listView.setOnItemClickListener(new DrawerItemClickListener());
-        //hasta aca testeado
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //getActionBar().setDisplayHomeAsUpEnabled(true);
+        //getActionBar().setHomeButtonEnabled(true);
 
         actionBarDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
                 this,
@@ -62,30 +64,22 @@ public class MainActivity extends AppCompatActivity {
                 R.string.drawer_close
         ) {
 
-            /**
-             * Called when a drawer has settled in a completely closed state.
-             */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(title);
+                //getActionBar().setTitle(title);
+                invalidateOptionsMenu();
             }
 
-            /**
-             * Called when a drawer has settled in a completely open state.
-             */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(drawertitle);
+                //getActionBar().setTitle(drawertitle);
+                invalidateOptionsMenu();
             }
         };
+        //se setea el menu como listener de boton
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
     }
-
-    // Set the drawer toggle as the DrawerListener
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -102,12 +96,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
+
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        // Handle your other action bar items...
+        // todo aca hay que codear otros botones de la barra que se quieran agregar
 
         return super.onOptionsItemSelected(item);
         }
