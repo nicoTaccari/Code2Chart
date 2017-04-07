@@ -1,36 +1,21 @@
 package com.example.proyectofinal.code2chart;
 
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.AndroidCharacter;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    //atributos para el drawer nav panel
-    private String[] pruebas;
-    private DrawerLayout drawerLayout;
-    private ListView listView;
     private android.support.v7.app.ActionBarDrawerToggle actionBarDrawerToggle;
-    private CharSequence title;
-    private CharSequence drawertitle;
-
     private List<String> item = new ArrayList<String>();
     private ListView listaDeArchivos;
 
@@ -39,22 +24,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        title = drawertitle = getTitle();
-        pruebas = getResources().getStringArray(R.array.nombres);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        listView = (ListView) findViewById(R.id.left_drawer);
+        String[] pruebas = getResources().getStringArray(R.array.nombres);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ListView listView = (ListView) findViewById(R.id.left_drawer);
 
-        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, R.layout.item_prueba, pruebas);
-        listView.setAdapter(itemsAdapter);
+        //ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, R.layout.listview_with_text_image, pruebas);
+        //listView.setAdapter(itemsAdapter);
         // seteo de listeners para los botones del menu lateral
-        listView.setOnItemClickListener(new DrawerItemClickListener());
+        //listView.setOnItemClickListener(new DrawerItemClickListener());
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-        //getActionBar().setHomeButtonEnabled(true);
 
         actionBarDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(
                 this,
@@ -66,13 +47,11 @@ public class MainActivity extends AppCompatActivity {
 
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                //getActionBar().setTitle(title);
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //getActionBar().setTitle(drawertitle);
                 invalidateOptionsMenu();
             }
         };
