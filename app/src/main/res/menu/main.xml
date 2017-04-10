@@ -6,4 +6,12 @@
         android:orderInCategory="100"
         android:title="@string/crearNuevaCarpeta"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/buscar"
+        android:title="buscar"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/ic_search"/>
 </menu>
