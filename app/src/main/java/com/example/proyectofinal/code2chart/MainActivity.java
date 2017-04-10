@@ -12,9 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ListView listaDeArchivos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,5 +103,34 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    
+    /*----------METODOS PROPIOS------------------------*/
+    /*----------Listar los archivos por tipo----------*/
+    private void listarArchivos(){
+        int cantidadDeArchivos = (int) getFilesDir().listFiles().length;
+        File[] files = getFilesDir().listFiles();
+        ArrayList<CarpetaOArchivo> carpetas = new ArrayList<CarpetaOArchivo>();
+        if(cantidadDeArchivos != 0){
+            for (int i = 0; i < cantidadDeArchivos; i++) {
+                File file = files[i];
+                if (file.isDirectory()) {
+                    carpetas.add(new CarpetaOArchivo(R.drawable.ic_action_name, file.getName() + "/"));
+                } else {
+                    carpetas.add(new CarpetaOArchivo(R.drawable.ic_file, file.getName()));
+                }
+            }
+        }
+
+        CarpetasAdapter adapterCarpetas = new CarpetasAdapter(this, carpetas);
+        listaDeArchivos.setAdapter(adapterCarpetas);
+    }
+
+
+    private void crearCarpeta(String nombre){
+        File nuevaCarpeta = new File(getFilesDir(), nombre);
+        if(!nuevaCarpeta.exists()) {
+            nuevaCarpeta.mkdirs();
+        }
     }
 }
