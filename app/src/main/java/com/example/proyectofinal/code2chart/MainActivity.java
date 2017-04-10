@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity
 
         //seteo listview de archivos
         listaDeArchivos = (ListView) findViewById(R.id.listaDeArchivos);
+        listarArchivos();
     }
 
     @Override
