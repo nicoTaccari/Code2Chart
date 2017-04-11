@@ -10,12 +10,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        /*MenuItem item = menu.findItem(R.id.buscar);
+        MenuItem item = menu.findItem(R.id.buscar);
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -86,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return false;
             }
         });
-        return super.onCreateOptionsMenu(menu);*/
-        return true;
+        return super.onCreateOptionsMenu(menu);
+        //return true;
     }
 
     @Override
@@ -106,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onClick(DialogInterface dialog, int which) {
                             crearCarpeta(dato.getText().toString());
                             listarArchivos();
-                            Toast.makeText(getApplicationContext(), "Carpeta creada exitosamente",Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton("Cancelar", null)
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
-        final CarpetasAdapter adapterCarpetas = new CarpetasAdapter(this, carpetas);
+        adapterCarpetas = new CarpetasAdapter(this, carpetas);
         listaDeArchivos.setAdapter(adapterCarpetas);
     }
 
@@ -167,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         File nuevaCarpeta = new File(getFilesDir(), nombre);
         if(!nuevaCarpeta.exists()) {
             nuevaCarpeta.mkdirs();
+            Toast.makeText(getApplicationContext(), "Carpeta creada exitosamente",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Ya existe una carpeta con el mismo nombre",Toast.LENGTH_SHORT).show();
         }
     }
 }
