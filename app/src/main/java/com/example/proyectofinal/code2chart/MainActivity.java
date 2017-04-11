@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onClick(DialogInterface dialog, int which) {
                             crearCarpeta(dato.getText().toString());
                             listarArchivos();
-                            Toast.makeText(getApplicationContext(), "Carpeta creada exitosamente",Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton("Cancelar", null)
@@ -169,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         File nuevaCarpeta = new File(getFilesDir(), nombre);
         if(!nuevaCarpeta.exists()) {
             nuevaCarpeta.mkdirs();
+            Toast.makeText(getApplicationContext(), "Carpeta creada exitosamente",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Ya existe una carpeta con el mismo nombre",Toast.LENGTH_SHORT).show();
         }
     }
 }
