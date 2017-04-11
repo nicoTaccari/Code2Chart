@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -160,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
-        final CarpetasAdapter adapterCarpetas = new CarpetasAdapter(this, carpetas);
+        adapterCarpetas = new CarpetasAdapter(this, carpetas);
         listaDeArchivos.setAdapter(adapterCarpetas);
     }
 
