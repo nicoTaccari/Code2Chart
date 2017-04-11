@@ -11,99 +11,90 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by nico on 10/04/17.
- */
 
 public class CarpetasAdapter extends BaseAdapter implements Filterable {
-    private List<CarpetaOArchivo> originalData = null;
-    private List<CarpetaOArchivo> filteredData = null;
-    private LayoutInflater mInflater;
-    private CarpetaOArchivoFilter item = new CarpetaOArchivoFilter();
 
-    public CarpetasAdapter(Context unContexto, List<CarpetaOArchivo> datos){
-        this.filteredData = datos;
-        this.originalData = datos;
-        mInflater = LayoutInflater.from(unContexto);
+    private ArrayList<CarpetaOArchivo> misDatos;
+    private ArrayList<CarpetaOArchivo> filterListMisDatos;
+    private CarpetaOArchivoFilter filter;
+    private Context miContexto;
+
+    public CarpetasAdapter(Context unContexto, ArrayList<CarpetaOArchivo> datos){
+        this.miContexto = unContexto;
+        this.misDatos = datos;
+        this.filterListMisDatos = datos;
     }
 
     @Override
     public int getCount() {
-        return filteredData.size();
+        return misDatos.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return filteredData.get(position);
+        return misDatos.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return misDatos.indexOf(getItem(position));
     }
 
     public View getView(int posicion, View convertView, ViewGroup parent){
 
-        CarpetasHolder holder = null;
+        LayoutInflater inflater = (LayoutInflater) miContexto.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if(convertView == null) {
-            convertView = mInflater.inflate(R.layout.item_folder,null);
-
-            holder = new CarpetasHolder();
-            holder.imagenItem = (ImageView) convertView.findViewById(R.id.icono);
-            holder.textoItem = (TextView) convertView.findViewById(R.id.texto);
-            convertView.setTag(holder);
-        }else{
-            holder = (CarpetasHolder)convertView.getTag();
+            convertView = inflater.inflate(R.layout.item_folder,null);
         }
 
-        holder.textoItem.setText(filteredData.get(posicion).getTitulo());
-        holder.imagenItem.setImageResource(filteredData.get(posicion).getIcono());
+        TextView titulo = (TextView) convertView.findViewById(R.id.texto);
+        ImageView icono = (ImageView) convertView.findViewById(R.id.icono);
+
+        //SET DATA
+        titulo.setText(misDatos.get(posicion).getTitulo());
+        icono.setImageResource(misDatos.get(posicion).getIcono());
 
         return convertView;
     }
 
-    static class CarpetasHolder {
-        ImageView imagenItem;
-        TextView textoItem;
-    }
-
     @Override
     public Filter getFilter() {
-        return item;
+        if(filter == null){
+            filter = new CarpetaOArchivoFilter();
+        }
+        return filter;
     }
 
-    private class CarpetaOArchivoFilter extends Filter{
+    class CarpetaOArchivoFilter extends Filter{
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-
-            String filterString = constraint.toString().toLowerCase();
             FilterResults results = new FilterResults();
-            final List<CarpetaOArchivo> list = originalData;
-            int count = list.size();
-            final ArrayList<CarpetaOArchivo> nlist = new ArrayList<CarpetaOArchivo>();
-            String filterableString;
 
-            for (int i = 0; i < count; i++) {
-                filterableString = list.get(i).getTitulo();
-                if (filterableString.toLowerCase().contains(filterString)) {
-                    nlist.add(list.get(i));
+            if(constraint != null && constraint.length()>0){
+                constraint = constraint.toString().toUpperCase();
+                ArrayList<CarpetaOArchivo> filters = new ArrayList<CarpetaOArchivo>();
+
+                for (int i = 0; i < filterListMisDatos.size(); i++) {
+                    if (filterListMisDatos.get(i).getTitulo().toUpperCase().contains(constraint)) {
+                        CarpetaOArchivo file = new CarpetaOArchivo(filterListMisDatos.get(i).getTitulo(),filterListMisDatos.get(i).getIcono());
+                        filters.add(file);
+                    }
                 }
+
+                results.count = filters.size();
+                results.values = filters;
+            }else{
+                results.count = filterListMisDatos.size();
+                results.values = filterListMisDatos;
             }
-
-            results.values = nlist;
-            results.count = nlist.size();
-
             return results;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filteredData = (ArrayList<CarpetaOArchivo>) results.values;
+            misDatos = (ArrayList<CarpetaOArchivo>) results.values;
             notifyDataSetChanged();
         }
     }

@@ -1,22 +1,13 @@
 package com.example.proyectofinal.code2chart;
 
-/**
- * Created by nico on 10/04/17.
- */
-
 public class CarpetaOArchivo {
 
     private int icono;
     private String titulo;
 
-    public CarpetaOArchivo(int unIcono, String untitulo) {
-        super();
+    public CarpetaOArchivo(String untitulo, int unIcono) {
         this.icono = unIcono;
         this.titulo = untitulo;
-    }
-
-    public CarpetaOArchivo() {
-        super();
     }
 
     public String getTitulo() {

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/nuevaCarpeta"
         android:orderInCategory="100"
         android:title="@string/crearNuevaCarpeta"
-        app:showAsAction="never" />
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/buscar"
@@ -14,4 +15,5 @@
         app:showAsAction="always"
         android:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/ic_search"/>
+
 </menu>

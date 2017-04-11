@@ -3,19 +3,18 @@ package com.example.proyectofinal.code2chart;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -23,8 +22,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ListView listaDeArchivos;
     private EditText dato;
@@ -74,7 +72,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
         /*MenuItem item = menu.findItem(R.id.buscar);
         SearchView searchView = (SearchView) item.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //adapterCarpetas.getFilter().filter(newText);
+                adapterCarpetas.getFilter().filter(newText);
                 return false;
             }
         });
@@ -156,17 +153,15 @@ public class MainActivity extends AppCompatActivity
             for (int i = 0; i < cantidadDeArchivos; i++) {
                 File file = files[i];
                 if (file.isDirectory()) {
-                    carpetas.add(new CarpetaOArchivo(R.drawable.ic_folder, file.getName() + "/"));
+                    carpetas.add(new CarpetaOArchivo(file.getName() + "/", R.drawable.ic_folder));
                 } else {
-                    carpetas.add(new CarpetaOArchivo(R.drawable.ic_file, file.getName()));
+                    carpetas.add(new CarpetaOArchivo(file.getName(),R.drawable.ic_file));
                 }
             }
         }
-
-        CarpetasAdapter adapterCarpetas = new CarpetasAdapter(this, carpetas);
+        final CarpetasAdapter adapterCarpetas = new CarpetasAdapter(this, carpetas);
         listaDeArchivos.setAdapter(adapterCarpetas);
     }
-
 
     private void crearCarpeta(String nombre){
         File nuevaCarpeta = new File(getFilesDir(), nombre);
