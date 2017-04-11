@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -146,14 +146,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /*----------METODOS PROPIOS------------------------*/
     /*----------Listar los archivos por tipo----------*/
     private void listarArchivos(){
-        int cantidadDeArchivos = (int) getFilesDir().listFiles().length;
+        int cantidadDeArchivos = getFilesDir().listFiles().length;
         File[] files = getFilesDir().listFiles();
         ArrayList<CarpetaOArchivo> carpetas = new ArrayList<CarpetaOArchivo>();
         if(cantidadDeArchivos != 0){
             for (int i = 0; i < cantidadDeArchivos; i++) {
                 File file = files[i];
                 if (file.isDirectory()) {
-                    carpetas.add(new CarpetaOArchivo(file.getName() + "/", R.drawable.ic_folder));
+                    carpetas.add(new CarpetaOArchivo(file.getName() + "/", R.drawable.ic_folder,new ArrayList<CarpetaOArchivo>()));
                 } else {
                     carpetas.add(new CarpetaOArchivo(file.getName(),R.drawable.ic_file));
                 }
