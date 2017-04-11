@@ -19,5 +19,5 @@
         android:layout_weight="8"
         android:gravity="left|center"
         android:textColor="#000"
-        android:textSize="20dp" />
+        android:textSize="20sp"/>
 </LinearLayout>
