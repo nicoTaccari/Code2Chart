@@ -16,8 +16,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -57,7 +57,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //seteo listview de archivos
         listaDeArchivos = (ListView) findViewById(R.id.listaDeArchivos);
-        listarArchivos();
+        listarArchivos(getFilesDir());
+
+        listaDeArchivos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
     }
 
     @Override
@@ -107,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             crearCarpeta(dato.getText().toString());
-                            listarArchivos();
+                            listarArchivos(getFilesDir());
                         }
                     })
                     .setNegativeButton("Cancelar", null)
@@ -143,25 +151,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    
+
+
+
     /*----------METODOS PROPIOS------------------------*/
     /*----------Listar los archivos por tipo----------*/
-    private void listarArchivos(){
-        int cantidadDeArchivos = getFilesDir().listFiles().length;
-        File[] files = getFilesDir().listFiles();
-        ArrayList<CarpetaOArchivo> carpetas = new ArrayList<CarpetaOArchivo>();
+    private void listarArchivos(File dir){
+        int cantidadDeArchivos = dir.listFiles().length;
+        File[] files = dir.listFiles();
+        ArrayList<FileComposite> carpetasYArchivos = new ArrayList<>();
+        ArrayList<Archivo> archivos = new ArrayList<>();
         if(cantidadDeArchivos != 0){
-            for (int i = 0; i < cantidadDeArchivos; i++) {
-                File file = files[i];
-                if (file.isDirectory()) {
-                    carpetas.add(new CarpetaOArchivo(file.getName() + "/", R.drawable.ic_folder,new ArrayList<CarpetaOArchivo>()));
-                } else {
-                    carpetas.add(new CarpetaOArchivo(file.getName(),R.drawable.ic_file));
-                }
+            this.setearAdapter(files,cantidadDeArchivos,carpetasYArchivos);
+        }
+        adapterCarpetas = new CarpetasAdapter(this, carpetasYArchivos);
+        listaDeArchivos.setAdapter(adapterCarpetas);
+    }
+
+    public void setearAdapter(File[] files, int cantidadDeArchivos, ArrayList<FileComposite> carpetasYArchivos){
+        for (int i = 0; i < cantidadDeArchivos; i++) {
+            if (files[i].isDirectory()) {
+                carpetasYArchivos.add(new Carpeta(/*files[i].getParent() + "/" +
+                        */files[i].getName() + "/", R.drawable.ic_folder));
+            } else {
+                carpetasYArchivos.add(new Archivo(/*files[i].getParent() + "/" +*/ files[i].getName(),
+                        R.drawable.ic_file));
             }
         }
-        adapterCarpetas = new CarpetasAdapter(this, carpetas);
-        listaDeArchivos.setAdapter(adapterCarpetas);
     }
 
     private void crearCarpeta(String nombre){

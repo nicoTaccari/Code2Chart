@@ -14,15 +14,15 @@ import java.util.ArrayList;
 
 public class CarpetasAdapter extends BaseAdapter implements Filterable {
 
-    private ArrayList<CarpetaOArchivo> misDatos;
-    private ArrayList<CarpetaOArchivo> filterListMisDatos;
+    private ArrayList<FileComposite> misDatos;
+    private ArrayList<FileComposite> filterListMisDatos;
     private CarpetaOArchivoFilter filter;
     private Context miContexto;
 
-    public CarpetasAdapter(Context unContexto, ArrayList<CarpetaOArchivo> datos){
+    public CarpetasAdapter(Context unContexto, ArrayList<FileComposite> carpetasYArchivos){
         this.miContexto = unContexto;
-        this.misDatos = datos;
-        this.filterListMisDatos = datos;
+        this.misDatos = carpetasYArchivos;
+        this.filterListMisDatos = carpetasYArchivos;
     }
 
     @Override
@@ -40,6 +40,7 @@ public class CarpetasAdapter extends BaseAdapter implements Filterable {
         return misDatos.indexOf(getItem(position));
     }
 
+    /*--------------------------------------------------------------------------------------*/
     public View getView(int posicion, View convertView, ViewGroup parent){
 
         LayoutInflater inflater = (LayoutInflater) miContexto.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -54,6 +55,7 @@ public class CarpetasAdapter extends BaseAdapter implements Filterable {
         //SET DATA
         titulo.setText(misDatos.get(posicion).getTitulo());
         icono.setImageResource(misDatos.get(posicion).getIcono());
+
 
         return convertView;
     }
@@ -74,12 +76,16 @@ public class CarpetasAdapter extends BaseAdapter implements Filterable {
 
             if(constraint != null && constraint.length()>0){
                 constraint = constraint.toString().toUpperCase();
-                ArrayList<CarpetaOArchivo> filters = new ArrayList<CarpetaOArchivo>();
+                ArrayList<FileComposite> filters = new ArrayList<FileComposite>();
 
-                for (int i = 0; i < filterListMisDatos.size(); i++) {
-                    if (filterListMisDatos.get(i).getTitulo().toUpperCase().contains(constraint)) {
-                        CarpetaOArchivo file = new CarpetaOArchivo(filterListMisDatos.get(i).getTitulo(),filterListMisDatos.get(i).getIcono());
-                        filters.add(file);
+                //TODO aplicar collections para un codigo mas limpio
+                for (FileComposite obj: filterListMisDatos){
+                    if (obj.getTitulo().toUpperCase().contains(constraint) && obj.getClass().isAssignableFrom(Carpeta.class)) {
+                        Carpeta carpeta = new Carpeta(obj.getTitulo(),obj.getIcono());
+                        filters.add(carpeta);
+                    }else if (obj.getTitulo().toUpperCase().contains(constraint) && obj.getClass().isAssignableFrom(Archivo.class)){
+                        Archivo archivo = new Archivo(obj.getTitulo(),obj.getIcono());
+                        filters.add(archivo);
                     }
                 }
 
@@ -94,7 +100,7 @@ public class CarpetasAdapter extends BaseAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            misDatos = (ArrayList<CarpetaOArchivo>) results.values;
+            misDatos = (ArrayList<FileComposite>) results.values;
             notifyDataSetChanged();
         }
     }
