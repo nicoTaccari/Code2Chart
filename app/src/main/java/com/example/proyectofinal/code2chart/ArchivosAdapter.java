@@ -12,17 +12,17 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CarpetasAdapter extends BaseAdapter implements Filterable {
+public class ArchivosAdapter extends BaseAdapter implements Filterable {
 
-    private ArrayList<FileComposite> misDatos;
-    private ArrayList<FileComposite> filterListMisDatos;
-    private CarpetaOArchivoFilter filter;
+    private ArrayList<Archivo> misDatos;
+    private ArrayList<Archivo> filterListMisDatos;
+    private ArchivoFilter filter;
     private Context miContexto;
 
-    public CarpetasAdapter(Context unContexto, ArrayList<FileComposite> carpetasYArchivos){
+    public ArchivosAdapter(Context unContexto, ArrayList<Archivo> archivos){
         this.miContexto = unContexto;
-        this.misDatos = carpetasYArchivos;
-        this.filterListMisDatos = carpetasYArchivos;
+        this.misDatos = archivos;
+        this.filterListMisDatos = archivos;
     }
 
     @Override
@@ -63,12 +63,12 @@ public class CarpetasAdapter extends BaseAdapter implements Filterable {
     @Override
     public Filter getFilter() {
         if(filter == null){
-            filter = new CarpetaOArchivoFilter();
+            filter = new ArchivoFilter();
         }
         return filter;
     }
 
-    class CarpetaOArchivoFilter extends Filter{
+    class ArchivoFilter extends Filter{
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -76,15 +76,12 @@ public class CarpetasAdapter extends BaseAdapter implements Filterable {
 
             if(constraint != null && constraint.length()>0){
                 constraint = constraint.toString().toUpperCase();
-                ArrayList<FileComposite> filters = new ArrayList<FileComposite>();
+                ArrayList<Archivo> filters = new ArrayList<>();
 
                 //TODO aplicar collections para un codigo mas limpio
-                for (FileComposite obj: filterListMisDatos){
-                    if (obj.getTitulo().toUpperCase().contains(constraint) && obj.getClass().isAssignableFrom(Carpeta.class)) {
-                        Carpeta carpeta = new Carpeta(obj.getTitulo(),obj.getIcono());
-                        filters.add(carpeta);
-                    }else if (obj.getTitulo().toUpperCase().contains(constraint) && obj.getClass().isAssignableFrom(Archivo.class)){
-                        Archivo archivo = new Archivo(obj.getTitulo(),obj.getIcono());
+                for (Archivo arch: filterListMisDatos){
+                    if (arch.getTitulo().toUpperCase().contains(constraint) && arch.getClass().isAssignableFrom(Archivo.class)){
+                        Archivo archivo = new Archivo(arch.getTitulo(),arch.getIcono());
                         filters.add(archivo);
                     }
                 }
@@ -100,7 +97,7 @@ public class CarpetasAdapter extends BaseAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            misDatos = (ArrayList<FileComposite>) results.values;
+            misDatos = (ArrayList<Archivo>) results.values;
             notifyDataSetChanged();
         }
     }

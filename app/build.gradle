@@ -4,6 +4,9 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
+        jackOptions{
+            enabled true
+        }
         applicationId "com.example.proyectofinal.code2chart"
         minSdkVersion 21
         targetSdkVersion 25
@@ -16,12 +19,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug {
-            debuggable true
-        }
     }
-
-
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {

@@ -19,7 +19,9 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:clickable="true"
+        android:focusableInTouchMode="true">
     </ListView>
 
 </android.support.constraint.ConstraintLayout>
