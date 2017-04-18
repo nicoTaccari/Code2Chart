@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/nuevaCarpeta"
-        android:orderInCategory="100"
-        android:title="@string/crearNuevaCarpeta"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/buscar"
         android:title="buscar"
         android:orderInCategory="100"
