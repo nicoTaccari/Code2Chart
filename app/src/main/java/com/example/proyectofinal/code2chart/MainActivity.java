@@ -12,13 +12,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listaDeArchivos = (ListView) findViewById(R.id.listaDeArchivos);
         listarArchivos(getFilesDir());
 
+        /*listener para los clicks*/
         listaDeArchivos.setOnItemClickListener((parent, view, position, id) -> {
             Archivo arch = (Archivo) listaDeArchivos.getItemAtPosition(position);
             arch.abrir(MainActivity.this.getApplicationContext(), listaDeArchivos);
@@ -136,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         R.drawable.ic_file));
             }
         }
+
 
 
     @Override

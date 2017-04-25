@@ -67,7 +67,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     public static String getPath(Context context, Uri uri) throws URISyntaxException {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             String[] projection = { "_display_name" };
-            Cursor cursor = null;
+            Cursor cursor;
 
             try {
 
