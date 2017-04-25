@@ -1,15 +1,16 @@
 package com.example.proyectofinal.code2chart;
 
+import android.support.v7.app.AppCompatActivity;
 
-import android.net.Uri;
+import java.util.Set;
 
 /**
  * Created by Casa on 25/04/2017.
  */
 
-public abstract class Parser {
+public abstract class Parser extends AppCompatActivity {
 
-    String[] palabrasReservadas;
+    Set<String> palabrasReservadas;
 
     abstract int parse(String name);
 }

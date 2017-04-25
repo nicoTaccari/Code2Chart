@@ -16,7 +16,6 @@ import java.net.URISyntaxException;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
-    private String fullName;
     private Button obtenerUri, generar;
     private ImageView icono;
     private TextView uriTexto;
@@ -83,7 +82,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 cursor = context.getContentResolver().query(uri, projection, null, null, null);
                 if (cursor.moveToFirst()) {
                     String name = cursor.getString(0);
-                    fullName = uri.getPath();
                     cursor.close();
                     return name;
                 }
@@ -117,7 +115,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-                parser.parse(fullName);
+                parser.parse(uriTexto.getText().toString());
                 break;
         }
     }
