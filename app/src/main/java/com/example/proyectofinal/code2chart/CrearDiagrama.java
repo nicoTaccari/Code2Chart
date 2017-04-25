@@ -16,10 +16,13 @@ import java.net.URISyntaxException;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
-    private Button boton;
+    private String fullName;
+    private Button obtenerUri, generar;
     private ImageView icono;
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
+    private String tipo;
+    private Parser parser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +30,11 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_main2);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        boton = (Button) findViewById(R.id.button2);
-        boton.setOnClickListener(this);
+        obtenerUri = (Button) findViewById(R.id.obtenerUri);
+        obtenerUri.setOnClickListener(this);
+
+        generar = (Button) findViewById(R.id.generar);
+        generar.setOnClickListener(this);
 
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
@@ -56,8 +62,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                         Uri uri = data.getData();
                         String archivo = getPath(CrearDiagrama.this, uri);
                         uriTexto.setText(archivo);
-                        String tipo = archivo.substring(archivo.indexOf(".")+1);
-                        seleccionarIcono(tipo);
+                        tipo = archivo.substring(archivo.indexOf(".")+1);
+                        seleccionarIcono();
                     } catch (Exception e) {
                         // Eat it
                     }
@@ -67,7 +73,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public static String getPath(Context context, Uri uri) throws URISyntaxException {
+    public String getPath(Context context, Uri uri) throws URISyntaxException {
+
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             String[] projection = { "_display_name" };
             Cursor cursor;
@@ -76,6 +83,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 cursor = context.getContentResolver().query(uri, projection, null, null, null);
                 if (cursor.moveToFirst()) {
                     String name = cursor.getString(0);
+                    fullName = uri.getPath();
                     cursor.close();
                     return name;
                 }
@@ -89,15 +97,28 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         return null;
     }
 
-    public void seleccionarIcono(String tipo){
+    public void seleccionarIcono(){
         switch(tipo){
             case "c":
                 icono.setImageResource(R.drawable.c);
+                parser = new CParser();
+                break;
+            default:
+                icono.setImageResource(R.drawable.nada_logo);
+                parser = null;
+                break;
         }
     }
 
     @Override
     public void onClick(View v) {
-        showFileChooser();
+        switch (v.getId()){
+            case R.id.obtenerUri:
+                showFileChooser();
+                break;
+            case R.id.generar:
+                parser.parse(fullName);
+                break;
+        }
     }
 }
