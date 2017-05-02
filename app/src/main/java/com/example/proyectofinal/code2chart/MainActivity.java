@@ -12,27 +12,27 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener {
 
     private ListView listaDeArchivos;
     private ArchivosAdapter adapterArchivos;
     SearchView searchView;
+    private ArrayList<Archivo> toDeleteItems;
+    private ArrayList<Archivo> archivos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CrearDiagrama.class);
-            MainActivity.this.startActivity(intent);
+            startActivity(intent);
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -53,18 +53,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        /*seteo el navigation drawer*/
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        /*inicializo los arrays de archivos*/
+        archivos = new ArrayList<>();
+        toDeleteItems = new ArrayList<>();
+
         //seteo listview de archivos
         listaDeArchivos = (ListView) findViewById(R.id.listaDeArchivos);
-        listarArchivos(getFilesDir());
+        listarArchivos(getFilesDir(),archivos);
 
         /*listener para los clicks*/
         listaDeArchivos.setOnItemClickListener((parent, view, position, id) -> {
             Archivo arch = (Archivo) listaDeArchivos.getItemAtPosition(position);
+            //TODO implentar abrir archivo
             arch.abrir(MainActivity.this.getApplicationContext(), listaDeArchivos);
         });
+
+        /*listener para los long clicks*/
+        listaDeArchivos.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listaDeArchivos.setMultiChoiceModeListener(this);
+
+
     }
 
     @Override
@@ -72,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -125,26 +137,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /*----------METODOS PROPIOS------------------------*/
     /*----------Listar los archivos por tipo----------*/
-    public void listarArchivos(File dir){
+    public void listarArchivos(File dir,ArrayList<Archivo> archivos) {
         int cantidadDeArchivos = dir.listFiles().length;
         File[] files = dir.listFiles();
-        ArrayList<Archivo> archivos = new ArrayList<>();
-        if(cantidadDeArchivos != 0){
-            this.setearAdapter(files,cantidadDeArchivos,archivos);
+
+        if (cantidadDeArchivos != 0) {
+            this.setearAdapter(files, cantidadDeArchivos, archivos);
         }
-        adapterArchivos = new ArchivosAdapter(this,archivos);
+        adapterArchivos = new ArchivosAdapter(this, archivos);
         listaDeArchivos.setAdapter(adapterArchivos);
     }
 
-    public void setearAdapter(File[] files, int cantidadDeArchivos, ArrayList<Archivo> archivos){
+    public void setearAdapter(File[] files, int cantidadDeArchivos, ArrayList<Archivo> archivos) {
         for (int i = 0; i < cantidadDeArchivos; i++) {
-            archivos.add(new Archivo(/*files[i].getParent() + "/" +*/ files[i].getName(),
-                        R.drawable.ic_file));
-            }
+            archivos.add(new Archivo(files[i].getName(),R.drawable.ic_file));
         }
+    }
 
 
-
+    /*---------Ocultar teclado y cerrar search cuando se toca en la pantalla---------*/
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
@@ -155,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int x = (int) ev.getX();
         int y = (int) ev.getY();
 
-        if(view instanceof EditText){
+        if (view instanceof EditText) {
             View innerView = getCurrentFocus();
 
             if (ev.getAction() == MotionEvent.ACTION_UP &&
@@ -186,5 +197,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mRect.bottom = location[1] + mEditText.getHeight();
 
         return mRect;
+    }
+
+    /*----------Metodos para implementar seleccion multiple de archivos---------*/
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.overlay_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()){
+            case (R.id.action_delete):
+                for (Archivo arch: toDeleteItems) {
+                    archivos.remove(arch);
+                }
+                mode.finish();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        toDeleteItems.clear();
+    }
+
+    @Override
+    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+        if (checked) {
+            toDeleteItems.add((Archivo) adapterArchivos.getItem(position));
+        } else {
+            toDeleteItems.remove(adapterArchivos.getItem(position));
+        }
     }
 }
