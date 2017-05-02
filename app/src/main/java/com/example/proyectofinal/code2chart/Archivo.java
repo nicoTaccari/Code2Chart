@@ -2,6 +2,7 @@ package com.example.proyectofinal.code2chart;
 
 import android.content.Context;
 import android.widget.ListView;
+import android.widget.Toast;
 
 /**
  * Created by nico on 11/04/17.
@@ -26,6 +27,6 @@ public class Archivo {
     }
 
     public void abrir(Context context, ListView listaDeArchivos) {
-        //TODO implementar cuando haya archivos para mostrar
+        Toast.makeText(context, "carlos", Toast.LENGTH_SHORT).show();
     }
 }
