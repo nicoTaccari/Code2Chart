@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ListView listaDeArchivos;
     private ArchivosAdapter adapterArchivos;
-    SearchView searchView;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
+        if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
@@ -134,10 +132,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (int i = 0; i < cantidadDeArchivos; i++) {
             archivos.add(new Archivo(/*files[i].getParent() + "/" +*/ files[i].getName(),
                         R.drawable.ic_file));
-            }
         }
-
-
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
