@@ -27,15 +27,17 @@ public class CParser extends Parser {
     }
 
     /*regex para tipo de datos de C*/
-    Pattern identificador = Pattern.compile("[_a-zA-Z]\\w{0,30}");
-    Pattern opAritmetico = Pattern.compile("( + | - | * | / | % | ++ | -- )");
-    Pattern opRalcional = Pattern.compile("(== | != | > | < | >= | <=)");
-    Pattern opLogico = Pattern.compile("(&& | || | !)");
-    Pattern opBitwise = Pattern.compile("(& | | | ^ | << | >>)");
-    Pattern opDeAsignacion = Pattern.compile("(= | += | -= | *= | /= | %=)");
-    Pattern opTernario = Pattern.compile("(.)( ? {1} )(.)(:{1})(.)");
-    Pattern opEspecial= Pattern.compile("(sizeof | & | *)");
-    Pattern comentario = Pattern.compile("//");
+    Pattern identificador = Pattern.compile("[_a-zA-Z]\\w{0,30}");//testeado
+    Pattern opAritmetico = Pattern.compile("(\\+|-|\\*|/|%|\\+\\+|--)");//testeado
+    Pattern opRelacional = Pattern.compile("([=|!|>|<]=|>|<)");//testeado
+    Pattern opLogico = Pattern.compile("(&&|\\|\\||!)");//testeado
+    Pattern opBitwise = Pattern.compile("(&|\\^|<<|>>|\\|\\|)");//testeado
+    Pattern opDeAsignacion = Pattern.compile("[\\+|-|\\*|/|%]?="); //testeado
+    Pattern opTernario = Pattern.compile("(.*)(\\?)(.*)(\\:)(.*)");  //testeado
+    Pattern opEspecial= Pattern.compile("(sizeof|&|\\*)");//testeado
+    Pattern comentario = Pattern.compile("//");//testeado
+
+
 
     Pattern ifStruct = Pattern.compile("(if)(\\s)*(\\((.*)\\))((\\s)*\\{(?si)(.*)\\}|(\\s)+(.*))");                                         //testeado
     Pattern forStruct = Pattern.compile("(for)(\\s)*(\\()(.*)(;)(.*)(;)(.*)(\\))((\\s)*\\{(.*)\\}|(\\s)+(.*))");                            //testeado

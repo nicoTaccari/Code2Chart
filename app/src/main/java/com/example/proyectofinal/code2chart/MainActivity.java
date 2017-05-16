@@ -30,9 +30,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ListView listaDeArchivos;
     private ArchivosAdapter adapterArchivos;
-    SearchView searchView;
     private ArrayList<Archivo> toDeleteItems;
     private ArrayList<Archivo> archivos;
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,9 +123,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
+        if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
 
@@ -156,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     /*---------Ocultar teclado y cerrar search cuando se toca en la pantalla---------*/
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
