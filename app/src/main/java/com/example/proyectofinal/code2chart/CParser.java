@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.regex.Pattern;
 
 /**
  * Created by Casa on 25/04/2017.
@@ -24,6 +25,17 @@ public class CParser extends Parser {
                                             "sizeof", "static", "struct", "typedef", "union", "unsigned", "void", "volatile"};
         palabrasReservadas = new HashSet<String>(Arrays.asList(palabras));
     }
+
+    /*regex para tipo de datos de C*/
+    Pattern identificador = Pattern.compile("[_a-zA-Z]\\w{0,30}");
+    Pattern opAritmetico = Pattern.compile("( + | - | * | / | % | ++ | -- )");
+    Pattern opRalcional = Pattern.compile("(== | != | > | < | >= | <=)");
+    Pattern opLogico = Pattern.compile("(&& | || | !)");
+    Pattern opBitwise = Pattern.compile("(& | | | ^ | << | >>)");
+    Pattern opDeAsignacion = Pattern.compile("(= | += | -= | *= | /= | %=)");
+    Pattern opTernario = Pattern.compile("(.)( ? {1} )(.)(:{1})(.)");
+    Pattern opEspecial= Pattern.compile("(sizeof | & | *)");
+    Pattern comentario = Pattern.compile("//");
 
     @Override
     int parse(String name) {
