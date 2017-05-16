@@ -234,6 +234,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
         if (checked) {
+            listaDeArchivos.setSelector(R.drawable.selector);
+            listaDeArchivos.setSelected(true);
             toDeleteItems.add((Archivo) adapterArchivos.getItem(position));
         } else {
             toDeleteItems.remove(adapterArchivos.getItem(position));
