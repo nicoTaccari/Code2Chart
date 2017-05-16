@@ -37,6 +37,11 @@ public class CParser extends Parser {
     Pattern opEspecial= Pattern.compile("(sizeof | & | *)");
     Pattern comentario = Pattern.compile("//");
 
+    Pattern ifStruct = Pattern.compile("(if)(\\s)*(\\((.*)\\))((\\s)*\\{(?si)(.*)\\}|(\\s)+(.*))");                                         //testeado
+    Pattern forStruct = Pattern.compile("(for)(\\s)*(\\()(.*)(;)(.*)(;)(.*)(\\))((\\s)*\\{(.*)\\}|(\\s)+(.*))");                            //testeado
+    Pattern dowhileStruct = Pattern.compile("(do)((\\s)+(.*)(\\s)+|(\\s)*(\\{)(.*)(\\})(\\s)*)(while)([\\s]*)(\\()(.*)(\\))");              //testeado
+    Pattern whileStruct = Pattern.compile("(while)(\\s)*\\((.*)\\)((\\s)*\\{(.*)\\}|(\\s)+(.*))");                                          //testeado
+
     @Override
     int parse(String name) {
         File file = new File(name);
@@ -52,6 +57,7 @@ public class CParser extends Parser {
                 if (!line.isEmpty()) {
                     text.append(line);
                     text.append('\n');
+
                     palabra = line.split(" ");
                     if (palabra[0].startsWith("//")) {
                         decodedText.append("Comentario\n");
