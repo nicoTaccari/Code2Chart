@@ -22,8 +22,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener {
@@ -62,6 +66,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         archivos = new ArrayList<>();
         toDeleteItems = new ArrayList<>();
 
+        /*Crear archivo*/
+        try {
+            openFileOutput("Carlos", 0);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         //seteo listview de archivos
         listaDeArchivos = (ListView) findViewById(R.id.listaDeArchivos);
         listarArchivos(getFilesDir(),archivos);
@@ -76,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /*listener para los long clicks*/
         listaDeArchivos.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listaDeArchivos.setMultiChoiceModeListener(this);
-
 
     }
 
@@ -241,4 +251,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             toDeleteItems.remove(adapterArchivos.getItem(position));
         }
     }
+
+    public void createFile(String sFileName, String sBody){
+        try{
+            File root = new File(getFilesDir(), "Notes");
+            if (!root.exists()) {
+                root.mkdirs();
+            }
+            File gpxfile = new File(root, sFileName);
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append(sBody);
+            writer.flush();
+            writer.close();
+            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
+        }
+        catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

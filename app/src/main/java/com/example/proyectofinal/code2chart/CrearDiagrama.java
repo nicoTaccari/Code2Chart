@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.net.URISyntaxException;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
@@ -22,6 +23,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     private static final int FILE_SELECT_CODE = 0;
     private String tipo;
     private Parser parser;
+    public static final int REQUEST_CODE=10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +68,25 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                     } catch (Exception e) {
                         // Eat it
                     }
+                }break;
+
+            case REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    if (data.hasExtra("resultadoImagen")) {
+                        Bundle bundleXml = getIntent().getExtras();
+                        if(bundleXml != null){
+                            File nombreXml = (File) bundleXml.get("resultadoImagen");
+                            Intent intentDiagrama = new Intent(this, MainActivity.class);
+                            intentDiagrama.putExtra("imagenDiagrama", nombreXml);
+                            startActivity(intentDiagrama);
+                        }
+
+
+
+                    }
                 }
-                break;
+
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public String getPath(Context context, Uri uri) throws URISyntaxException {
@@ -115,8 +132,17 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-                parser.parse(uriTexto.getText().toString());
+                //parser.parse(uriTexto.getText().toString());
+                this.enviarOnClick();
                 break;
         }
     }
+
+    public void enviarOnClick(){
+        Intent intentDiagrama = new Intent(this, Diagrama.class);
+        String XmlName = "SampleGraph"; //TODO
+        intentDiagrama.putExtra("imagenDiagrama", XmlName +".xml");
+        startActivityForResult(intentDiagrama, REQUEST_CODE);
+    }
+
 }

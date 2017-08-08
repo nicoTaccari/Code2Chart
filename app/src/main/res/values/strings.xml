@@ -6,4 +6,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="crearNuevaCarpeta">Crear nueva carpeta</string>
+    <string name="title_activity_diagram_view">DiagramView</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
 </resources>
