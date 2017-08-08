@@ -133,7 +133,9 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.generar:
                 //parser.parse(uriTexto.getText().toString());
-                this.enviarOnClick();
+                //this.enviarOnClick();
+                Intent carlos = new Intent(this, Diagrama.class);
+                startActivity(carlos);
                 break;
         }
     }

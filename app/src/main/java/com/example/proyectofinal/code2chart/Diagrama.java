@@ -55,10 +55,10 @@ public class Diagrama extends AppCompatActivity {
 
         File imagenDiagrama = saveBitmap(diagram, "Ejemplo");
 
-        Intent data = new Intent();
+        /*Intent data = new Intent();
         data.putExtra("resultadoImagen",imagenDiagrama);
         setResult(Activity.RESULT_OK,data);
-        finish();
+        finish();*/
 
     }
 
@@ -107,10 +107,13 @@ public class Diagrama extends AppCompatActivity {
         List<String> nodosNoDecision = new ArrayList<String>();
 
 
-        /*RectF medida = new RectF(0, 0, 800, 800);
-        diagram.setBounds(medida);*/
-        AutoResize ajuste = null;
-        diagram.setAutoResize(ajuste.AllDirections);
+        RectF medida = new RectF(0, 0, 50, 10);
+        
+        diagram.setBounds(medida);
+        /*AutoResize ajuste = null;
+        diagram.setAutoResize(ajuste.AllDirections);*/
+
+        //diagram.resizeToFitItems(10);
 
         DiagramView view = new DiagramView(this);
         view.setDiagram(diagram);
@@ -217,13 +220,14 @@ public class Diagrama extends AppCompatActivity {
             Log.e("file exist", "" + file + ",Bitmap= " + nombre);
         }
 
-        int cantidad = getFilesDir().listFiles().length;
+         try {
+             diagrama.saveTo(nombre + ".png",this);
 
-        try {
             // make a new bitmap from your file
             Bitmap imagenDiagrama = diagrama.getBackgroundImage();
 
             outStream = new FileOutputStream(file);
+
             imagenDiagrama.compress(Bitmap.CompressFormat.PNG, 100, outStream);
             outStream.flush();
             outStream.close();
