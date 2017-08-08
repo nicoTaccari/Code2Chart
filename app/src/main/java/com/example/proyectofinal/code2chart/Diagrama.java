@@ -108,7 +108,7 @@ public class Diagrama extends AppCompatActivity {
 
 
         RectF medida = new RectF(0, 0, 50, 10);
-        
+
         diagram.setBounds(medida);
         /*AutoResize ajuste = null;
         diagram.setAutoResize(ajuste.AllDirections);*/
