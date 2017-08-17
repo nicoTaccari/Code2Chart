@@ -50,13 +50,13 @@ public class Diagrama extends AppCompatActivity {
 
             loadGraph("SampleGraph.xml", diagram);
 
-            HtmlBuilder creador = new HtmlBuilder(diagram);
+            /*HtmlBuilder creador = new HtmlBuilder(diagram);
             try {
                 String text = creador.createImageHtml("index.html","Code2Chart",getFilesDir().toString(), "./diagrama.png", "png");
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
-            }
+            }*/
         }
 
         //finish();
@@ -108,8 +108,13 @@ public class Diagrama extends AppCompatActivity {
         List<String> nodosNoDecision = new ArrayList<String>();
 
 
+<<<<<<< HEAD
         RectF medida = new RectF(0, 0, 100, 100);
         
+=======
+        RectF medida = new RectF(0, 0, 50, 10);
+
+>>>>>>> 94542ea5727ac7d8238ae1b72d039c8492f6b6b6
         diagram.setBounds(medida);
         /*AutoResize ajuste = null;
         diagram.setAutoResize(ajuste.AllDirections);*/
