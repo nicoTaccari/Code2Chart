@@ -1,8 +1,10 @@
 package com.example.proyectofinal.code2chart;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -19,6 +21,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.MimeTypeMap;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -80,8 +83,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /*listener para los clicks*/
         listaDeArchivos.setOnItemClickListener((parent, view, position, id) -> {
             Archivo arch = (Archivo) listaDeArchivos.getItemAtPosition(position);
-            //TODO implentar abrir archivo
-            arch.abrir(MainActivity.this.getApplicationContext(), listaDeArchivos);
+            File file = new File(getFilesDir().toString() + arch.getTitulo());
+            Uri imagenUri = Uri.fromFile(file);
+            String mimeType = getMimeType(imagenUri);
+            openImage(imagenUri, mimeType);
+
+            //arch.abrir(this, listaDeArchivos, file, mimeType);
         });
 
         /*listener para los long clicks*/
@@ -161,6 +168,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (int i = 0; i < cantidadDeArchivos; i++) {
             archivos.add(new Archivo(files[i].getName(),R.drawable.ic_file));
         }
+    }
+
+    public String getMimeType(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = getApplicationContext().getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+    public void openImage(Uri imagenUri, String mimeType){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(imagenUri, mimeType);
+        startActivity(intent);
     }
 
 

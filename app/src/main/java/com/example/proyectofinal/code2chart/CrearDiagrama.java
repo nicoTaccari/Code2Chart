@@ -8,22 +8,23 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.net.URISyntaxException;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
     private Button obtenerUri, generar;
+    private EditText nombreTitulo;
     private ImageView icono;
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
     private String tipo;
     private Parser parser;
-    public static final int REQUEST_CODE=10;
+    public static final int REQUEST_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
+        nombreTitulo = (EditText) findViewById(R.id.nombreTitulo);
+
     }
 
     private void showFileChooser() {
@@ -65,27 +68,16 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                         uriTexto.setText(archivo);
                         tipo = archivo.substring(archivo.indexOf(".")+1);
                         seleccionarIcono();
-                    } catch (Exception e) {
+                    }catch(Exception e){
                         // Eat it
                     }
-                }break;
-
-            case REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
-                    if (data.hasExtra("resultadoImagen")) {
-                        Bundle bundleXml = getIntent().getExtras();
-                        if(bundleXml != null){
-                            File nombreXml = (File) bundleXml.get("resultadoImagen");
-                            Intent intentDiagrama = new Intent(this, MainActivity.class);
-                            intentDiagrama.putExtra("imagenDiagrama", nombreXml);
-                            startActivity(intentDiagrama);
-                        }
-
-
-
-                    }
                 }
-
+            break;
+            case REQUEST_CODE:
+                if(resultCode == RESULT_OK && data.hasExtra("resultado")){
+                    Intent inicio = new Intent(this, MainActivity.class);
+                    startActivity(inicio);
+                }
         }
     }
 
@@ -132,18 +124,23 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-                //parser.parse(uriTexto.getText().toString());
-                //this.enviarOnClick();
-                Intent carlos = new Intent(this, Diagrama.class);
-                startActivity(carlos);
+                if(nombreTitulo.getText().toString().equals("")){
+                    Toast.makeText(this, "Completar todos los campos", Toast.LENGTH_SHORT).show();
+                }else {
+                    //parser.parse(uriTexto.getText().toString());
+                    //this.enviarOnClick(v);
+                    Intent i = new Intent(this, Diagrama.class);
+                    startActivity(i);
+                }
                 break;
         }
     }
 
-    public void enviarOnClick(){
+    public void enviarOnClick(View v){
         Intent intentDiagrama = new Intent(this, Diagrama.class);
         String XmlName = "SampleGraph"; //TODO
         intentDiagrama.putExtra("imagenDiagrama", XmlName +".xml");
+        intentDiagrama.putExtra("nombreImagen", nombreTitulo.getText().toString());
         startActivityForResult(intentDiagrama, REQUEST_CODE);
     }
 

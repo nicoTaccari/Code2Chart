@@ -1,19 +1,17 @@
 package com.example.proyectofinal.code2chart;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
-import com.mindfusion.diagramming.AutoResize;
 import com.mindfusion.diagramming.DecisionLayout;
 import com.mindfusion.diagramming.Diagram;
 import com.mindfusion.diagramming.DiagramNode;
 import com.mindfusion.diagramming.DiagramView;
 import com.mindfusion.diagramming.FitSize;
+import com.mindfusion.diagramming.HtmlBuilder;
 import com.mindfusion.diagramming.ShapeNode;
 
 import org.w3c.dom.Document;
@@ -24,7 +22,6 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,19 +43,23 @@ public class Diagrama extends AppCompatActivity {
 
         Diagram diagram = diagView.getDiagram();
 
-        Bundle bundleXml = getIntent().getExtras();
-        if(bundleXml != null){
-            String nombreXml = bundleXml.getString("imagenDiagrama");
+        Bundle bundleDiagrama = getIntent().getExtras();
+        if(bundleDiagrama != null){
+            String nombreXml = bundleDiagrama.getString("imagenDiagrama");
+            String nombreImagen = bundleDiagrama.getString("nombreImagen");
+
+            loadGraph("SampleGraph.xml", diagram);
+
+            HtmlBuilder creador = new HtmlBuilder(diagram);
+            try {
+                String text = creador.createImageHtml("index.html","Code2Chart",getFilesDir().toString(), "./diagrama.png", "png");
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
 
-        loadGraph("SampleGraph.xml", diagram);
-
-        File imagenDiagrama = saveBitmap(diagram, "Ejemplo");
-
-        /*Intent data = new Intent();
-        data.putExtra("resultadoImagen",imagenDiagrama);
-        setResult(Activity.RESULT_OK,data);
-        finish();*/
+        //finish();
 
     }
 
@@ -76,7 +77,7 @@ public class Diagrama extends AppCompatActivity {
         }
     }
 
-    void loadGraph(String filepath, Diagram diagram) {
+    public void loadGraph(String filepath, Diagram diagram) {
         NodoHandler manejador = new NodoHandler();
         HashMap<String, DiagramNode> nodeMap = new HashMap<String, DiagramNode>();
         RectF bounds = new RectF(0, 0, 15, 8);
@@ -107,7 +108,7 @@ public class Diagrama extends AppCompatActivity {
         List<String> nodosNoDecision = new ArrayList<String>();
 
 
-        RectF medida = new RectF(0, 0, 50, 10);
+        RectF medida = new RectF(0, 0, 100, 100);
         
         diagram.setBounds(medida);
         /*AutoResize ajuste = null;
@@ -177,10 +178,9 @@ public class Diagrama extends AppCompatActivity {
         layout.setHorizontalPadding(10);
         layout.setVerticalPadding(10);
         layout.arrange(diagram);
-
     }
 
-    boolean esNodoDecision(String idNodo, List<String> nodosDecision) {
+    public boolean esNodoDecision(String idNodo, List<String> nodosDecision) {
         boolean decision = false;
         if (nodosDecision.contains(idNodo)){
             decision = true;
@@ -189,7 +189,7 @@ public class Diagrama extends AppCompatActivity {
         return decision;
     }
 
-    List<String> obtenerNodosTargetsDadoUnNodoOrigenDeDecision(String idNodoDecision, NodeList links) {
+    public List<String> obtenerNodosTargetsDadoUnNodoOrigenDeDecision(String idNodoDecision, NodeList links) {
 
         List<String> nodosTarget = new ArrayList<String>();
         for (int i = 0; i < links.getLength(); ++i){
@@ -204,39 +204,26 @@ public class Diagrama extends AppCompatActivity {
 
     @Override
     public void finish(){
-        Intent respuesta = new Intent();
-        setResult(RESULT_OK, respuesta);
+        Intent data = new Intent();
+        data.putExtra("resultado","correcto");
+        setResult(RESULT_OK, data);
         super.finish();
     }
 
-    private File saveBitmap(Diagram diagrama, String nombre) {
-        String storageDirectory = this.getFilesDir().toString();
-        OutputStream outStream = null;
+    private void saveBitmap(Diagram diagrama, String nombre) {
+        File sd = getFilesDir();
+        File dest = new File(sd, nombre + ".png");
 
-        File file = new File(nombre + ".png");
-        if (file.exists()) {
-            file.delete();
-            file = new File(storageDirectory, nombre + ".png");
-            Log.e("file exist", "" + file + ",Bitmap= " + nombre);
-        }
+        Bitmap bitmap = diagView.getDrawingCache(true);
 
-         try {
-             diagrama.saveTo(nombre + ".png",this);
-
-            // make a new bitmap from your file
-            Bitmap imagenDiagrama = diagrama.getBackgroundImage();
-
-            outStream = new FileOutputStream(file);
-
-            imagenDiagrama.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            outStream.flush();
-            outStream.close();
+        try {
+            FileOutputStream out = new FileOutputStream(dest);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.e("file", "" + file);
-        return file;
-
     }
 
 }
