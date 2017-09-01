@@ -1,6 +1,10 @@
 package com.example.proyectofinal.code2chart;
 
+import android.graphics.Path;
+
 import com.mindfusion.diagramming.AnchorPattern;
+import com.mindfusion.diagramming.ElementTemplate;
+import com.mindfusion.diagramming.LineTemplate;
 import com.mindfusion.diagramming.Shape;
 import com.mindfusion.diagramming.ShapeNode;
 
@@ -41,12 +45,27 @@ public class NodoHandler {
                 diagramaNodo.setShape(Shape.fromId("Save"));
                 break;
 
-            case "for":
-                diagramaNodo.setShape(Shape.fromId("DividedProcess"));
+            case "bucle":
+                Shape nodoBucle = new Shape(
+
+                        Shape.fromId("Rectangle").getOutline(),
+
+                        // rect part
+                        new ElementTemplate[]{
+                            new LineTemplate(0, 30, 100, 30)
+                        },
+
+                        null,
+
+
+                        Path.FillType.WINDING, "bucle");
+
+                diagramaNodo.setShape(Shape.fromId("bucle"));
 
                 break;
 
         }
 
     }
+
 }

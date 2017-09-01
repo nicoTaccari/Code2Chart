@@ -2,16 +2,22 @@ package com.example.proyectofinal.code2chart;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.mindfusion.diagramming.DecisionLayout;
 import com.mindfusion.diagramming.Diagram;
 import com.mindfusion.diagramming.DiagramNode;
 import com.mindfusion.diagramming.DiagramView;
 import com.mindfusion.diagramming.FitSize;
-import com.mindfusion.diagramming.HtmlBuilder;
 import com.mindfusion.diagramming.ShapeNode;
 
 import org.w3c.dom.Document;
@@ -20,9 +26,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,51 +39,54 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class Diagrama extends AppCompatActivity {
+public class Diagrama extends AppCompatActivity implements View.OnClickListener {
 
-    DiagramView diagView;
+    private DiagramView diagramView;
+    private Button guardar, descartar;
+    private Diagram diagram;
+    private ImageView imagen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagrama);
 
-        diagView = (DiagramView)findViewById(R.id.diag_view);
+        diagramView = (DiagramView)findViewById(R.id.diag_view);
 
-        Diagram diagram = diagView.getDiagram();
+        descartar = (Button) findViewById(R.id.descartar);
+        descartar.setOnClickListener(this);
+
+        guardar = (Button) findViewById(R.id.guardar);
+        guardar.setOnClickListener(this);
+
+        imagen = (ImageView) findViewById(R.id.imagen);
 
         Bundle bundleDiagrama = getIntent().getExtras();
         if(bundleDiagrama != null){
             String nombreXml = bundleDiagrama.getString("imagenDiagrama");
             String nombreImagen = bundleDiagrama.getString("nombreImagen");
-
-            loadGraph("SampleGraph.xml", diagram);
-
-            /*HtmlBuilder creador = new HtmlBuilder(diagram);
-            try {
-                String text = creador.createImageHtml("index.html","Code2Chart",getFilesDir().toString(), "./diagrama.png", "png");
-            } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }*/
         }
 
-        //finish();
+        diagram = diagramView.getDiagram();
+
+        loadGraph("SampleGraph.xml", diagram);
 
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
-        outState.putString("diagram", diagView.saveToString());
+        outState.putString("diagram", diagramView.saveToString());
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState){
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState.containsKey("diagram")){
-            diagView.loadFromString(savedInstanceState.getString("diagram"));
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+            diagramView.zoomToFit();
         }
+
+        //diagramView.setVisibility(View.INVISIBLE);
+
     }
 
     public void loadGraph(String filepath, Diagram diagram) {
@@ -105,24 +117,11 @@ public class Diagrama extends AppCompatActivity {
         NodeList links = graph.getElementsByTagName("Link");
 
         List<String> nodosDecision = new ArrayList<String>(); //aca voy a storear los ids de todos los nodos que son decision
-        List<String> nodosNoDecision = new ArrayList<String>();
+        List<String> nodosNoDecision= new ArrayList<String>();
 
+        RectF medidaIncial = new RectF(0, 0, 500, 800);
+        diagram.setBounds(medidaIncial);
 
-<<<<<<< HEAD
-        RectF medida = new RectF(0, 0, 100, 100);
-        
-=======
-        RectF medida = new RectF(0, 0, 50, 10);
-
->>>>>>> 94542ea5727ac7d8238ae1b72d039c8492f6b6b6
-        diagram.setBounds(medida);
-        /*AutoResize ajuste = null;
-        diagram.setAutoResize(ajuste.AllDirections);*/
-
-        //diagram.resizeToFitItems(10);
-
-        DiagramView view = new DiagramView(this);
-        view.setDiagram(diagram);
 
         for (int i = 0; i < nodes.getLength(); ++i) {
 
@@ -183,6 +182,10 @@ public class Diagrama extends AppCompatActivity {
         layout.setHorizontalPadding(10);
         layout.setVerticalPadding(10);
         layout.arrange(diagram);
+
+        RectF hola = diagram.getContentBounds(false, true);
+        diagram.setBounds(hola);
+
     }
 
     public boolean esNodoDecision(String idNodo, List<String> nodosDecision) {
@@ -208,27 +211,68 @@ public class Diagrama extends AppCompatActivity {
     }
 
     @Override
-    public void finish(){
-        Intent data = new Intent();
-        data.putExtra("resultado","correcto");
-        setResult(RESULT_OK, data);
-        super.finish();
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.guardar:
+                startSave();
+                startActivityMain();
+                break;
+            case R.id.descartar:
+                startActivityMain();
+                break;
+
+        }
     }
 
-    private void saveBitmap(Diagram diagrama, String nombre) {
-        File sd = getFilesDir();
-        File dest = new File(sd, nombre + ".png");
+    public void startActivityMain(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 
-        Bitmap bitmap = diagView.getDrawingCache(true);
+    public void startSave(){
+        FileOutputStream fileOutputStream = null;
+        File file = getDisc();
+        if(!file.exists() && !file.mkdirs()){
+            Toast.makeText(this, "Can´t create directory to save image", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        try {
-            FileOutputStream out = new FileOutputStream(dest);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyymmsshhmmss");
+        String date = simpleDateFormat.format(new Date());
+        String name = "Img"+date+".jpg";
+        String file_name = file.getAbsolutePath()+"/"+name;
+        File new_file = new File(file_name);
+        try{
+            fileOutputStream = new FileOutputStream(new_file);
+            Bitmap bitmap = diagramView.getDrawingCache(true);
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream);
+            Toast.makeText(this, "Save image success",Toast.LENGTH_SHORT).show();
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        refreshGallery(new_file);
+    }
+
+    public void refreshGallery(File file){
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.fromFile(file));
+        sendBroadcast(intent);
+    }
+
+    public File getDisc(){
+        File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        return new File(file, "Image Demo");
+    }
+
+    public static Bitmap viewToBitmap(View view, int width, int height){
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
     }
 
 }

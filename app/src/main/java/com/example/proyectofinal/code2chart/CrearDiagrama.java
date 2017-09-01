@@ -124,14 +124,14 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-                if(nombreTitulo.getText().toString().equals("")){
+                /*if(nombreTitulo.getText().toString().equals("")){
                     Toast.makeText(this, "Completar todos los campos", Toast.LENGTH_SHORT).show();
-                }else {
+                }else {*/
                     //parser.parse(uriTexto.getText().toString());
                     //this.enviarOnClick(v);
                     Intent i = new Intent(this, Diagrama.class);
                     startActivity(i);
-                }
+                //} //TODO
                 break;
         }
     }
