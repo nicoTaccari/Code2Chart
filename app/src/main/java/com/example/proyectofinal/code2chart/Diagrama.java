@@ -2,7 +2,6 @@ package com.example.proyectofinal.code2chart;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,14 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.mindfusion.diagramming.ContainerNode;
 import com.mindfusion.diagramming.DecisionLayout;
 import com.mindfusion.diagramming.Diagram;
 import com.mindfusion.diagramming.DiagramNode;
 import com.mindfusion.diagramming.DiagramView;
 import com.mindfusion.diagramming.FitSize;
 import com.mindfusion.diagramming.ShapeNode;
+import com.mindfusion.diagramming.jlayout.Orientation;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -44,7 +46,20 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     private DiagramView diagramView;
     private Button guardar, descartar;
     private Diagram diagram;
+
+    private ArrayList<ContainerNode> listaDeBucles = new ArrayList<>();
+    private ArrayList<ArrayList<DiagramNode>> listasDeNodosParaBucles = new ArrayList<>();
+
     private ImageView imagen;
+    private HashMap<String, DiagramNode> nodeMap = new HashMap<String, DiagramNode>();
+    private RectF medidaDiagrama;
+
+    private ArrayList<String> nodosDecision = new ArrayList<>();
+    private ArrayList<String> nodosNoDecision = new ArrayList<>();
+
+    private NodoHandler manejador = new NodoHandler();
+
+    private int cantidadTotalDeBucles = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +86,15 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
         loadGraph("SampleGraph.xml", diagram);
 
-    }
+        armarElLayout(diagram);
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState){
-        outState.putString("diagram", diagramView.saveToString());
-        super.onSaveInstanceState(outState);
+        for(int i = listaDeBucles.size()-1; i >= 0; --i){
+            for (int k = 0; k < listasDeNodosParaBucles.get(i).size(); ++k) {
+                listaDeBucles.get(i).add(listasDeNodosParaBucles.get(i).get(k));
+            }
+            armarElLayout(diagram);
+        }
+
     }
 
     @Override
@@ -85,14 +103,22 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             diagramView.zoomToFit();
         }
 
-        //diagramView.setVisibility(View.INVISIBLE);
+        RelativeLayout.LayoutParams testLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        testLP.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+        diagramView.setLayoutParams(testLP);
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        outState.putString("diagram", diagramView.saveToString());
+        super.onSaveInstanceState(outState);
+    }
+
     public void loadGraph(String filepath, Diagram diagram) {
-        NodoHandler manejador = new NodoHandler();
-        HashMap<String, DiagramNode> nodeMap = new HashMap<String, DiagramNode>();
-        RectF bounds = new RectF(0, 0, 15, 8);
+
+        RectF bounds = new RectF(0, 0, 20, 10);
 
         // load the graph xml
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -110,47 +136,20 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         Element graph = (Element) xml.getFirstChild();
 
-        // traigo todos los nodos, y todos los links
+        //traigo todos los nodos, y todos los links
         NodeList nodes = graph.getElementsByTagName("Node");
         NodeList links = graph.getElementsByTagName("Link");
 
-        List<String> nodosDecision = new ArrayList<String>(); //aca voy a storear los ids de todos los nodos que son decision
-        List<String> nodosNoDecision= new ArrayList<String>();
-
-        RectF medidaIncial = new RectF(0, 0, 500, 800);
+        RectF medidaIncial = new RectF(0, 0, 1000, 1000);
         diagram.setBounds(medidaIncial);
 
-
-        for (int i = 0; i < nodes.getLength(); ++i) {
-
-            Element node = (Element) nodes.item(i);
-            //nuevocodigo
-            String tipo = node.getAttribute("tipo");
-            switch (tipo) {
-                case "decision":
-                    nodosDecision.add(node.getAttribute("id"));
-                    break;
-
-                default:
-                    nodosNoDecision.add(node.getAttribute("id"));
-                    break;
-            }
-
-            ShapeNode diagramNode = diagram.getFactory().createShapeNode(bounds);
-            //Convierte el "tipo" ubicado en el xml en la forma
-            manejador.conversor(node, diagramNode);
-            String idNodo = node.getAttribute("id");
-            nodeMap.put(idNodo, diagramNode);
-            diagramNode.setText(idNodo);
-            diagramNode.setText(node.getAttribute("nombre"));
-            //Clave para que se vea bien el texto dentro del nodo
-            diagramNode.resizeToFitText(FitSize.KeepRatio);
-        }
+        dibujarLosNodosYClasificarlos(nodes, bounds);
 
         List<String> nodosYaLinkeados = new ArrayList<String>(); //para mapear de 1 sola vez
-        // mapeo los links
+        //mapeo los links
         for (int i = 0; i < links.getLength(); ++i) {
 
             Element link = (Element) links.item(i);
@@ -172,19 +171,139 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
                     diagram.getFactory().createDiagramLink(origin, target2).setText("NO");
                     nodosYaLinkeados.add(link.getAttribute("origin"));
                 }
+
             }
         }
 
-        // Conn esto, menciono que si bien tome un layout de Decision, tambien tengo que mapear todas las relaciones de cada
+    }
+
+    public void dibujarLosNodosYClasificarlos(NodeList nodes, RectF bounds){
+
+        String idBucle = null;
+        int enDonde = 0;
+
+        for (int i = 0; i < nodes.getLength(); ++i) {
+
+            Element node = (Element) nodes.item(i);
+            //nuevocodigo
+            String tipo = node.getAttribute("tipo");
+            switch (tipo) {
+                case "decision":
+                    nodosDecision.add(node.getAttribute("id"));
+                    break;
+
+                case "bucle":
+
+                    nodosNoDecision.add(node.getAttribute("id"));
+                    idBucle = node.getAttribute("id");
+
+                    ContainerNode nodoBuclePrimitivo = dibujarUnNodoBucle(bounds, node, nodeMap);
+                    listaDeBucles.add(nodoBuclePrimitivo);
+
+                    listasDeNodosParaBucles.add(new ArrayList<>());
+
+                    for(int j = i + 1; !((Element) nodes.item(j)).getAttribute("tipo").equals("finBucle"+idBucle); ++j){
+
+                        Element nodoInside = (Element) nodes.item(j);
+
+                        String tipoEnBucle = nodoInside.getAttribute("tipo");
+
+                        switch (tipoEnBucle){
+                            case "bucle":
+                                ContainerNode nodoContainer  = dibujarUnNodoBucle(bounds, nodoInside, nodeMap);
+                                listasDeNodosParaBucles.get(enDonde).add(nodoContainer);
+                                listasDeNodosParaBucles.add(new ArrayList<>());
+                                ++enDonde;
+                                ++cantidadTotalDeBucles;
+                                listaDeBucles.add(nodoContainer);
+                                nodosNoDecision.add(nodoInside.getAttribute("id"));
+                                break;
+
+                            case "proceso":
+                                ShapeNode nodoProceso = dibujarUnNodo(bounds, nodoInside, nodeMap);
+                                listasDeNodosParaBucles.get(enDonde).add(nodoProceso);
+                                nodosNoDecision.add(nodoInside.getAttribute("id"));
+                                break;
+
+                            case "decision":
+                                ShapeNode nodoDecision = dibujarUnNodo(bounds, nodoInside, nodeMap);
+                                listasDeNodosParaBucles.get(enDonde).add(nodoDecision);
+                                nodosDecision.add(nodoInside.getAttribute("id"));
+                                break;
+
+                            default:
+                                --enDonde;
+                                break;
+                        }
+
+                        i=j;
+
+                    }
+
+                    ++cantidadTotalDeBucles;
+                    enDonde = cantidadTotalDeBucles;
+
+                    break;
+
+                default:
+                    if (!node.getAttribute("tipo").matches(".*\\d+.*")) {
+                        nodosNoDecision.add(node.getAttribute("id"));
+                    }
+                    break;
+            }
+
+            if (!node.getAttribute("tipo").matches(".*\\d+.*") && !tipo.equals("bucle")) {
+                dibujarUnNodo(bounds, node, nodeMap);
+            }
+
+        }
+
+
+    }
+
+    public ShapeNode dibujarUnNodo(RectF bounds, Element node, HashMap<String, DiagramNode> nodeMapFuncion){
+
+        ShapeNode diagramNode = diagram.getFactory().createShapeNode(bounds);
+
+        //Convierte el "tipo" ubicado en el xml en la forma
+        manejador.conversor(node, diagramNode);
+        String idNodo = node.getAttribute("id");
+        nodeMapFuncion.put(idNodo, diagramNode);
+        diagramNode.setText(node.getAttribute("nombre"));
+
+        //Clave para que se vea bien el texto dentro del nodo
+        diagramNode.resizeToFitText(FitSize.KeepRatio);
+
+        return diagramNode;
+    }
+
+    public ContainerNode dibujarUnNodoBucle(RectF bounds, Element node,  HashMap<String, DiagramNode> nodeMapFuncion){
+
+        ContainerNode bucle = diagram.getFactory().createContainerNode(bounds);
+        bucle.setAutoShrink(true);
+
+        //Convierte el "tipo" ubicado en el xml en la forma
+        manejador.conversorNodoContainer(node, bucle);
+        String idNodo = node.getAttribute("id");
+        nodeMapFuncion.put(idNodo, bucle );
+        bucle.setEditedText(node.getAttribute("nombre"));
+
+        return bucle;
+
+    }
+
+    public void armarElLayout(Diagram diagrama){
+        //Conn esto, menciono que si bien tome un layout de Decision, tambien tengo que mapear todas las relaciones de cada
         //uno de los nodos, es decir si hay uno que es decision, necesariamente tengo que crear los 2 links de decision seguidos,
         //no uno, y luego otro.
         DecisionLayout layout = new DecisionLayout();
         layout.setHorizontalPadding(10);
         layout.setVerticalPadding(10);
-        layout.arrange(diagram);
+        layout.setOrientation(Orientation.Vertical);
+        layout.arrange(diagrama);
 
-        RectF hola = diagram.getContentBounds(false, true);
-        diagram.setBounds(hola);
+        medidaDiagrama = diagrama.getContentBounds(false, true);
+        diagrama.setBounds(medidaDiagrama);
 
     }
 
@@ -193,7 +312,6 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         if (nodosDecision.contains(idNodo)){
             decision = true;
         }
-
         return decision;
     }
 
@@ -214,6 +332,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.guardar:
+                Bitmap bitmap = diagramView.getDrawingCache(true);
+                imagen.setImageBitmap(bitmap);
                 startSave();
                 startActivityMain();
                 break;
@@ -266,13 +386,6 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     public File getDisc(){
         File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         return new File(file, "Image Demo");
-    }
-
-    public static Bitmap viewToBitmap(View view, int width, int height){
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
     }
 
 }

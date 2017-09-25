@@ -1,14 +1,13 @@
 package com.example.proyectofinal.code2chart;
 
-import android.graphics.Path;
-
 import com.mindfusion.diagramming.AnchorPattern;
-import com.mindfusion.diagramming.ElementTemplate;
-import com.mindfusion.diagramming.LineTemplate;
-import com.mindfusion.diagramming.Shape;
+import com.mindfusion.diagramming.ContainerNode;
 import com.mindfusion.diagramming.ShapeNode;
+import com.mindfusion.diagramming.SimpleShape;
 
 import org.w3c.dom.Element;
+
+import static com.mindfusion.diagramming.Shape.fromId;
 
 public class NodoHandler {
 
@@ -19,53 +18,47 @@ public class NodoHandler {
         String tipo = nodo.getAttribute("tipo");
         switch (tipo) {
             case "proceso":
-                diagramaNodo.setShape(Shape.fromId("Rectangle"));
+                diagramaNodo.setShape(fromId("Rectangle"));
                 break;
             case "inicio":
-                diagramaNodo.setShape(Shape.fromId("Start"));
+                diagramaNodo.setShape(fromId("Start"));
                 break;
 
             case "decision":
 
-                diagramaNodo.setShape(Shape.fromId("Decision"));
+                diagramaNodo.setShape(fromId("Decision"));
                 diagramaNodo.setAnchorPattern(AnchorPattern.fromId("Decision2In2Out"));
                 diagramaNodo.setTag(true);
 
                 break;
 
             case "fin":
-                diagramaNodo.setShape(Shape.fromId("Terminator"));
+                diagramaNodo.setShape(fromId("Terminator"));
                 break;
 
             case "entrada":
-                diagramaNodo.setShape(Shape.fromId("Save"));
+                diagramaNodo.setShape(fromId("Save"));
                 break;
 
             case "salida":
-                diagramaNodo.setShape(Shape.fromId("Save"));
+                diagramaNodo.setShape(fromId("Document"));
                 break;
+        }
+    }
+
+    public void conversorNodoContainer(Element nodo, ContainerNode diagramaNodo) {
+        String tipo = nodo.getAttribute("tipo");
+
+        switch (tipo) {
 
             case "bucle":
-                Shape nodoBucle = new Shape(
 
-                        Shape.fromId("Rectangle").getOutline(),
-
-                        // rect part
-                        new ElementTemplate[]{
-                            new LineTemplate(0, 30, 100, 30)
-                        },
-
-                        null,
-
-
-                        Path.FillType.WINDING, "bucle");
-
-                diagramaNodo.setShape(Shape.fromId("bucle"));
+                diagramaNodo.setShape(SimpleShape.Rectangle);
 
                 break;
-
         }
 
     }
+
 
 }

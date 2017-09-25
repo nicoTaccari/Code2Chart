@@ -73,11 +73,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                     }
                 }
             break;
-            case REQUEST_CODE:
-                if(resultCode == RESULT_OK && data.hasExtra("resultado")){
-                    Intent inicio = new Intent(this, MainActivity.class);
-                    startActivity(inicio);
-                }
         }
     }
 
@@ -129,9 +124,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 }else {*/
                     //parser.parse(uriTexto.getText().toString());
                     //this.enviarOnClick(v);
-                    Intent i = new Intent(this, Diagrama.class);
-                    startActivity(i);
-                //} //TODO
+                    Intent generarDiagrama = new Intent(this, Diagrama.class);
+                    startActivity(generarDiagrama);
                 break;
         }
     }

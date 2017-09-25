@@ -3,22 +3,40 @@
     <Nodes>
         <Node id="0" nombre="inicio" tipo="inicio" />
         <Node id="1" nombre="Si soy yo" tipo="decision" />
-        <Node id="4" nombre="activity 2" tipo="proceso"/>
+        <Node id="2" nombre="bucle1" tipo="bucle"/>
+        <Node id="3" nombre="activity 2" tipo="proceso"/>
+        <Node id="4" nombre="carlos" tipo="finBucle2"/>
         <Node id="5" nombre="proceso de sumatoria" tipo="entrada"/>
         <Node id="6" nombre="task 4" tipo="salida"/>
         <Node id="7" nombre="activity 3" tipo="proceso"/>
         <Node id="8" nombre="task 5" tipo="proceso"/>
         <Node id="9" nombre="task 6" tipo="proceso"/>
-        <Node id="10" nombre="bluclebuclebuclebuclebluclebuclebuclebucle" tipo="bucle"/>
+        <Node id="10" nombre="bucle" tipo="bucle"/>
         <Node id="11" nombre="task 7" tipo="proceso"/>
-        <Node id="12" nombre="fin" tipo="fin"/>
+        <Node id="12" nombre="task 8" tipo="proceso"/>
+        <Node id="13" nombre="bucle" tipo="bucle"/>
+        <Node id="14" nombre="task 9" tipo="proceso"/>
+        <Node id="15" nombre="task 10" tipo="proceso"/>
+        <Node id="16" nombre="bucle" tipo="bucle"/>
+        <Node id="17" nombre="task 10" tipo="proceso"/>
+        <Node id="18" nombre="bucle" tipo="finBucle16"/>
+        <Node id="19" nombre="bucle" tipo="finBucle13"/>
+        <Node id="20" nombre="task 12" tipo="proceso"/>
+        <Node id="21" nombre="fin" tipo="finBucle10"/>
+        <Node id="22" nombre="task 13" tipo="proceso"/>
+        <Node id="23" nombre="bucle" tipo="bucle"/>
+        <Node id="24" nombre="task 14" tipo="proceso"/>
+        <Node id="25" nombre="task 15" tipo="proceso"/>
+        <Node id="26" nombre="fin" tipo="finBucle23"/>
+        <Node id="27" nombre="task 16" tipo="proceso"/>
+        <Node id="28" nombre="fin" tipo="fin"/>
     </Nodes>
+
     <Links>
         <Link origin="0" target="1"/>
-        <Link origin="1" target="4" tagLink="YES"/>
-        <Link origin="2" target="4"/>
-        <Link origin="4" target="5"/>
-        <Link origin="4" target="6"/>
+        <Link origin="1" target="2" tagLink="YES"/>
+        <Link origin="2" target="5"/>
+        <Link origin="2" target="6"/>
         <Link origin="5" target="10"/>
         <Link origin="6" target="10"/>
         <Link origin="0" target="7"/>
@@ -26,7 +44,15 @@
         <Link origin="8" target="9"/>
         <Link origin="1" target="9" tagLink="NO"/>
         <Link origin="9" target="10"/>
-        <Link origin="10" target="11"/>
         <Link origin="11" target="12"/>
+        <Link origin="12" target="13"/>
+        <Link origin="14" target="15"/>
+        <Link origin="15" target="16"/>
+        <Link origin="13" target="20"/>
+        <Link origin="10" target="22"/>
+        <Link origin="22" target="23"/>
+        <Link origin="24" target="25"/>
+        <Link origin="23" target="27"/>
+        <Link origin="27" target="28"/>
     </Links>
 </Graph>
