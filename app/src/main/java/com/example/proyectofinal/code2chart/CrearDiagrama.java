@@ -13,7 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.antlr.v4.runtime.Parser;
+
 import java.net.URISyntaxException;
+
+import parserUtils.CCompiler;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
@@ -23,8 +27,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
     private String tipo;
-    private Parser parser;
     public static final int REQUEST_CODE = 10;
+    private CCompiler compiler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +107,11 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         switch(tipo){
             case "c":
                 icono.setImageResource(R.drawable.c);
-                parser = new CParser();
+                compiler = new CCompiler();
                 break;
             default:
                 icono.setImageResource(R.drawable.nada_logo);
-                parser = null;
+                compiler = null;
                 break;
         }
     }

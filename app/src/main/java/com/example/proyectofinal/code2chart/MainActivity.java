@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -50,9 +51,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, CrearDiagrama.class);
-            startActivity(intent);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CrearDiagrama.class);
+                MainActivity.this.startActivity(intent);
+            }
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -81,14 +85,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listarArchivos(getFilesDir(),archivos);
 
         /*listener para los clicks*/
-        listaDeArchivos.setOnItemClickListener((parent, view, position, id) -> {
-            Archivo arch = (Archivo) listaDeArchivos.getItemAtPosition(position);
-            File file = new File(getFilesDir().toString() + arch.getTitulo());
-            Uri imagenUri = Uri.fromFile(file);
-            String mimeType = getMimeType(imagenUri);
-            openImage(imagenUri, mimeType);
+        listaDeArchivos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Archivo arch = (Archivo) listaDeArchivos.getItemAtPosition(position);
+                File file = new File(MainActivity.this.getFilesDir().toString() + arch.getTitulo());
+                Uri imagenUri = Uri.fromFile(file);
+                String mimeType = MainActivity.this.getMimeType(imagenUri);
+                MainActivity.this.openImage(imagenUri, mimeType);
 
-            //arch.abrir(this, listaDeArchivos, file, mimeType);
+                //arch.abrir(this, listaDeArchivos, file, mimeType);
+            }
         });
 
         /*listener para los long clicks*/

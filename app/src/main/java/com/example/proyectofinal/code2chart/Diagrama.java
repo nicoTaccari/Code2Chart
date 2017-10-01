@@ -48,7 +48,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     private Diagram diagram;
 
     private ArrayList<ContainerNode> listaDeBucles = new ArrayList<>();
-    private ArrayList<ArrayList<DiagramNode>> listasDeNodosParaBucles = new ArrayList<>();
+    private ArrayList<ArrayList<Object>> listasDeNodosParaBucles = new ArrayList<>();
 
     private ImageView imagen;
     private HashMap<String, DiagramNode> nodeMap = new HashMap<String, DiagramNode>();
@@ -90,7 +90,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
         for(int i = listaDeBucles.size()-1; i >= 0; --i){
             for (int k = 0; k < listasDeNodosParaBucles.get(i).size(); ++k) {
-                listaDeBucles.get(i).add(listasDeNodosParaBucles.get(i).get(k));
+                listaDeBucles.get(i).add((DiagramNode) listasDeNodosParaBucles.get(i).get(k));
             }
             armarElLayout(diagram);
         }

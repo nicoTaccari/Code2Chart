@@ -4,9 +4,6 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        jackOptions {
-            enabled true
-        }
         applicationId "com.example.proyectofinal.code2chart"
         minSdkVersion 21
         targetSdkVersion 25
@@ -21,8 +18,8 @@ android {
         }
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility 1.7
+        sourceCompatibility 1.7
     }
 }
 
@@ -36,4 +33,6 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+    compile files('libs/antlr4-runtime-4.3.jar')
+    compile 'org.jetbrains:annotations-java5:15.0'
 }
