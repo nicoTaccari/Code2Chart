@@ -133,7 +133,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     }
 
     public String magia(String unaUri) throws Exception {
-        String xmlName = new String("xml");
+        String xmlName = new String(Environment.getExternalStorageDirectory()+File.separator+"xml");
 
         Uri myUri = Uri.parse(unaUri);
         InputStream inputStream = getContentResolver().openInputStream(myUri);
