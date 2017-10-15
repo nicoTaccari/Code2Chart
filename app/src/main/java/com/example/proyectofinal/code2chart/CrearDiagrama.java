@@ -13,11 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.antlr.v4.runtime.Parser;
-
 import java.net.URISyntaxException;
-
-import parserUtils.CCompiler;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
@@ -27,8 +23,9 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
     private String tipo;
-    public static final int REQUEST_CODE = 10;
-    private CCompiler compiler;
+
+    private String archivo;
+    private Uri uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +64,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
             case FILE_SELECT_CODE:
                 if (resultCode == RESULT_OK) {
                     try {
-                        Uri uri = data.getData();
-                        String archivo = getPath(CrearDiagrama.this, uri);
+                        uri = data.getData();
+                        archivo = getPath(CrearDiagrama.this, uri);
                         uriTexto.setText(archivo);
                         tipo = archivo.substring(archivo.indexOf(".")+1);
                         seleccionarIcono();
@@ -107,11 +104,9 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         switch(tipo){
             case "c":
                 icono.setImageResource(R.drawable.c);
-                compiler = new CCompiler();
                 break;
             default:
                 icono.setImageResource(R.drawable.nada_logo);
-                compiler = null;
                 break;
         }
     }
@@ -126,20 +121,15 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 /*if(nombreTitulo.getText().toString().equals("")){
                     Toast.makeText(this, "Completar todos los campos", Toast.LENGTH_SHORT).show();
                 }else {*/
-                    //parser.parse(uriTexto.getText().toString());
-                    //this.enviarOnClick(v);
-                    Intent generarDiagrama = new Intent(this, Diagrama.class);
-                    startActivity(generarDiagrama);
+                this.enviarOnClick(v);
                 break;
         }
     }
 
     public void enviarOnClick(View v){
         Intent intentDiagrama = new Intent(this, Diagrama.class);
-        String XmlName = "SampleGraph"; //TODO
-        intentDiagrama.putExtra("imagenDiagrama", XmlName +".xml");
-        intentDiagrama.putExtra("nombreImagen", nombreTitulo.getText().toString());
-        startActivityForResult(intentDiagrama, REQUEST_CODE);
+        intentDiagrama.putExtra("uriDelArchivo", uri.toString());
+        startActivity(intentDiagrama);
     }
 
 }

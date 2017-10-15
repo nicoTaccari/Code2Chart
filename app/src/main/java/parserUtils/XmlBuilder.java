@@ -94,7 +94,7 @@ public class XmlBuilder {
 	public XmlBuilder appendLink(LinkedList<Integer> source, int destId, String tagLink) {
 		if(source == null) return this;
 
-		for (int i = 0; source.size() < 0; i++){
+		for (int i = 0; i < source.size(); i++){
 			Element childLink = doc.createElement("Link");
 			childLink.setAttribute("origin", String.valueOf(source.get(i)));
 			childLink.setAttribute("target", String.valueOf(destId));

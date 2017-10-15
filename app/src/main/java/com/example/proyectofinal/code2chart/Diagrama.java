@@ -25,21 +25,30 @@ import com.mindfusion.diagramming.jlayout.Orientation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
+import parserUtils.ASTContainer;
+import parserUtils.AbstractSyntaxTreeConverter;
+import parserUtils.CCompiler;
+import parserUtils.MyCVisitor;
+import parserUtils.ParserToXmlAdapter;
+import parserUtils.XmlBuilder;
 
 public class Diagrama extends AppCompatActivity implements View.OnClickListener {
 
@@ -61,6 +70,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     private int cantidadTotalDeBucles = 0;
 
+    private String uri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,13 +89,18 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
         Bundle bundleDiagrama = getIntent().getExtras();
         if(bundleDiagrama != null){
-            String nombreXml = bundleDiagrama.getString("imagenDiagrama");
-            String nombreImagen = bundleDiagrama.getString("nombreImagen");
+            uri = bundleDiagrama.getString("uriDelArchivo");
         }
 
         diagram = diagramView.getDiagram();
 
-        loadGraph("SampleGraph.xml", diagram);
+        try {
+            loadGraph(magia(uri), diagram);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         armarElLayout(diagram);
 
@@ -116,32 +132,62 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         super.onSaveInstanceState(outState);
     }
 
+    public String magia(String unaUri) throws Exception {
+        String xmlName = new String("xml");
+
+        Uri myUri = Uri.parse(unaUri);
+        InputStream inputStream = getContentResolver().openInputStream(myUri);
+
+        String filePreParse = convertStreamToString(inputStream);
+
+        CCompiler compiler = new CCompiler();
+        AbstractSyntaxTreeConverter ast = compiler.compile(filePreParse);
+
+        MyCVisitor visitor = new MyCVisitor();
+        visitor.visit(ast,null);
+
+        ParserToXmlAdapter adapter = new ParserToXmlAdapter();
+        LinkedList<ASTContainer> list = adapter.getConvertedList(ast);
+
+        XmlBuilder builder = new XmlBuilder(xmlName);
+        builder.setXmlStructure();
+
+        for(int i=0; i < list.size(); ++i){
+            builder.appendNode(list.get(i).getId(), list.get(i).getTipo(), list.get(i).getContent());
+            if (list.get(i).getTipo() == "decision") {
+                builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "decision");
+            } else{
+                builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "");
+            }
+        }
+
+        builder.build();
+
+        return builder.getFile().getAbsolutePath();
+    }
+
+    public String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
+
     public void loadGraph(String filepath, Diagram diagram) {
 
         RectF bounds = new RectF(0, 0, 20, 10);
 
         // load the graph xml
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-        Document xml = null;
-        try {
-            xml = builder.parse(getAssets().open(filepath));
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Element graph = (Element) xml.getFirstChild();
+        Document document = loadXmlFile(filepath);
+        Element root = document.getDocumentElement();
 
         //traigo todos los nodos, y todos los links
-        NodeList nodes = graph.getElementsByTagName("Node");
-        NodeList links = graph.getElementsByTagName("Link");
+        NodeList nodes = root.getElementsByTagName("Node");
+        NodeList links = root.getElementsByTagName("Link");
 
         RectF medidaIncial = new RectF(0, 0, 1000, 1000);
         diagram.setBounds(medidaIncial);
@@ -175,6 +221,23 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             }
         }
 
+    }
+
+    public Document loadXmlFile(String filepath){
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setIgnoringElementContentWhitespace(true);
+        factory.setNamespaceAware(true);
+
+        Document document = null;
+        DocumentBuilder builder;
+        try{
+            File file = new File(filepath);
+            builder = factory.newDocumentBuilder();
+            document = builder.parse(file);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return document;
     }
 
     public void dibujarLosNodosYClasificarlos(NodeList nodes, RectF bounds){
