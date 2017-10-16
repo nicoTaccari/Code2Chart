@@ -1,5 +1,6 @@
 package com.example.proyectofinal.code2chart;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
@@ -72,6 +73,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String path = null;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagrama);
 
@@ -95,7 +98,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         diagram = diagramView.getDiagram();
 
         try {
-            loadGraph(magia(uri), diagram);
+            path = magia(uri, getApplicationContext());
+            loadGraph(path, diagram);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -110,7 +114,6 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             }
             armarElLayout(diagram);
         }
-
     }
 
     @Override
@@ -132,8 +135,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         super.onSaveInstanceState(outState);
     }
 
-    public String magia(String unaUri) throws Exception {
-        String xmlName = new String(Environment.getExternalStorageDirectory()+File.separator+"xml");
+    public String magia(String unaUri, Context ctx) throws Exception {
+        String xmlName = new String("xml");
 
         Uri myUri = Uri.parse(unaUri);
         InputStream inputStream = getContentResolver().openInputStream(myUri);
@@ -149,7 +152,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         ParserToXmlAdapter adapter = new ParserToXmlAdapter();
         LinkedList<ASTContainer> list = adapter.getConvertedList(ast);
 
-        XmlBuilder builder = new XmlBuilder(xmlName);
+        XmlBuilder builder = new XmlBuilder(xmlName, ctx);
         builder.setXmlStructure();
 
         for(int i=0; i < list.size(); ++i){
@@ -163,7 +166,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
         builder.build();
 
-        return builder.getFile().getAbsolutePath();
+        return this.getFilesDir().getAbsolutePath() + '/' + xmlName;
     }
 
     public String convertStreamToString(InputStream is) throws Exception {
