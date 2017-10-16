@@ -18,14 +18,14 @@ import java.net.URISyntaxException;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
-    private Button obtenerUri, generar;
-    private EditText nombreTitulo, nombreAutor;
+    private Button generar, obtenerUri;
+    private EditText nombreUrl, nombreTitulo, nombreAutor;
     private ImageView icono;
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
-    private String tipo, titulo, autor;
+    private String url, tipo, titulo, autor;
 
-    private String archivo;
+    private String archivo = "nada";
     private Uri uri;
 
     @Override
@@ -34,16 +34,17 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_main2);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        obtenerUri = (Button) findViewById(R.id.obtenerUri);
-        obtenerUri.setOnClickListener(this);
-
         generar = (Button) findViewById(R.id.generar);
         generar.setOnClickListener(this);
+
+        obtenerUri = (Button) findViewById(R.id.obtenerUri);
+        obtenerUri.setOnClickListener(this);
 
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
         nombreTitulo = (EditText) findViewById(R.id.nombreTitulo);
         nombreAutor = (EditText) findViewById(R.id.nombreAutor);
+        nombreUrl = (EditText) findViewById(R.id.url);
 
     }
 
@@ -115,20 +116,43 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.obtenerUri:
                 showFileChooser();
                 break;
             case R.id.generar:
                 titulo = nombreTitulo.getText().toString();
                 autor = nombreAutor.getText().toString();
-                if(TextUtils.isEmpty(titulo) && titulo.trim().matches("") && TextUtils.isEmpty(autor) && autor.trim().matches("")) {
+                url = nombreUrl.getText().toString();
+                boolean error = false;
+
+                if (TextUtils.isEmpty(titulo) && titulo.trim().matches("")) {
                     nombreTitulo.setError("Título inválido");
-                    nombreAutor.setError("Autor inválido");
-                    return;
-                }else {
-                    this.enviarOnClick(v);
+                    error = true;
+                } else{
+                    error = false;
                 }
+
+                if (TextUtils.isEmpty(autor) && autor.trim().matches("")) {
+                    nombreAutor.setError("Autor inválido");
+                    error = true;
+                }else{
+                    error = false;
+                }
+
+                if (TextUtils.isEmpty(url) && url.trim().matches("") && !archivo.substring(archivo.length() - 2).equals(".c")) {
+                    nombreUrl.setError("Url inválida");
+                    Toast.makeText(this, "Archivo o url de Github inválidos", Toast.LENGTH_LONG).show();
+                    error = true;
+                }else {
+                    error = false;
+                }
+
+                if(error == true){
+                    return;
+                }
+
+                this.enviarOnClick(v);
                 break;
         }
     }
@@ -139,6 +163,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         intentDiagrama.putExtra("tituloMando", titulo);
         intentDiagrama.putExtra("autorMando", autor);
         startActivity(intentDiagrama);
+        
         finish();
     }
 
