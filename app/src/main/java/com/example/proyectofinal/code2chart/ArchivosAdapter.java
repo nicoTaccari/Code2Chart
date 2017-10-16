@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,13 +48,12 @@ public class ArchivosAdapter extends BaseAdapter implements Filterable {
             convertView = inflater.inflate(R.layout.item_folder,null);
         }
 
-        TextView titulo = (TextView) convertView.findViewById(R.id.texto);
-        ImageView icono = (ImageView) convertView.findViewById(R.id.icono);
+        TextView titulo = (TextView) convertView.findViewById(R.id.titulo);
+        TextView autor = (TextView) convertView.findViewById(R.id.autor);
 
         //SET DATA
         titulo.setText(misDatos.get(posicion).getTitulo());
-        icono.setImageResource(misDatos.get(posicion).getIcono());
-
+        autor.setText(misDatos.get(posicion).getAutor());
 
         return convertView;
     }
@@ -81,7 +79,7 @@ public class ArchivosAdapter extends BaseAdapter implements Filterable {
                 //TODO aplicar collections para un codigo mas limpio
                 for (Archivo arch: filterListMisDatos){
                     if (arch.getTitulo().toUpperCase().contains(constraint) && arch.getClass().isAssignableFrom(Archivo.class)){
-                        Archivo archivo = new Archivo(arch.getTitulo(),arch.getIcono());
+                        Archivo archivo = new Archivo(arch.getTitulo(), arch.getAutor());
                         filters.add(archivo);
                     }
                 }

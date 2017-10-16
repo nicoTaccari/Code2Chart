@@ -26,13 +26,10 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener {
 
@@ -42,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Archivo> archivos;
 
     private SearchView searchView;
+
+    private String titulo, autor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,13 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         archivos = new ArrayList<>();
         toDeleteItems = new ArrayList<>();
 
-        /*Crear archivo*/
-        try {
-            openFileOutput("Carlos", 0);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
         //seteo listview de archivos
         listaDeArchivos = (ListView) findViewById(R.id.listaDeArchivos);
         listarArchivos(getFilesDir(),archivos);
@@ -89,12 +81,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Archivo arch = (Archivo) listaDeArchivos.getItemAtPosition(position);
-                File file = new File(MainActivity.this.getFilesDir().toString() + arch.getTitulo());
-                Uri imagenUri = Uri.fromFile(file);
-                String mimeType = MainActivity.this.getMimeType(imagenUri);
-                MainActivity.this.openImage(imagenUri, mimeType);
-
-                //arch.abrir(this, listaDeArchivos, file, mimeType);
+                Uri imagenUri = arch.getUri();
+                Intent intent = new Intent(getApplicationContext(), ImagenActivity.class);
+                intent.putExtra("uri", imagenUri.toString());
+                startActivity(intent);
             }
         });
 
@@ -173,7 +163,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setearAdapter(File[] files, int cantidadDeArchivos, ArrayList<Archivo> archivos) {
         for (int i = 0; i < cantidadDeArchivos; i++) {
-            archivos.add(new Archivo(files[i].getName(),R.drawable.ic_file));
+            String nombreArchivo = files[i].getName();
+
+            StringTokenizer st = new StringTokenizer(nombreArchivo, ".");
+            String tituloArchivo = st.nextToken();
+            String autorArchivo = st.nextToken();
+
+            Archivo archivo = new Archivo(tituloArchivo, autorArchivo);
+            archivo.setUri(Uri.fromFile(getFileStreamPath(nombreArchivo)));
+
+            archivos.add(archivo);
         }
     }
 
@@ -190,14 +189,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return mimeType;
     }
-
-    public void openImage(Uri imagenUri, String mimeType){
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(imagenUri, mimeType);
-        startActivity(intent);
-    }
-
 
     /*---------Ocultar teclado y cerrar search cuando se toca en la pantalla---------*/
 
@@ -284,24 +275,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             toDeleteItems.add((Archivo) adapterArchivos.getItem(position));
         } else {
             toDeleteItems.remove(adapterArchivos.getItem(position));
-        }
-    }
-
-    public void createFile(String sFileName, String sBody){
-        try{
-            File root = new File(getFilesDir(), "Notes");
-            if (!root.exists()) {
-                root.mkdirs();
-            }
-            File gpxfile = new File(root, sFileName);
-            FileWriter writer = new FileWriter(gpxfile);
-            writer.append(sBody);
-            writer.flush();
-            writer.close();
-            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
-        }
-        catch(IOException e){
-            e.printStackTrace();
         }
     }
 

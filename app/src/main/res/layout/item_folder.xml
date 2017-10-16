@@ -7,17 +7,69 @@
 
     <ImageView
         android:id="@+id/icono"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="2" />
+        android:layout_marginLeft="2dp"
+        android:layout_weight="2"
+        android:src="@drawable/ic_file"/>
 
-    <TextView
-        android:id="@+id/texto"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="8"
-        android:gravity="left|center"
-        android:textColor="#000"
-        android:textSize="20sp"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="8">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tituloGrande"
+                android:text="Titulo: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:gravity="left|center"
+                android:textColor="#000"
+                android:textSize="22sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/titulo"
+                android:text="Titulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:gravity="left|center"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:layout_marginLeft="2dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/autorGrande"
+                android:text="Autor: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:gravity="left|center"
+                android:textColor="#000"
+                android:textSize="22sp"
+                android:textStyle="bold"/>
+
+            <TextView
+            android:id="@+id/autor"
+            android:text="Autor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:gravity="left|center"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:layout_marginLeft="2dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>

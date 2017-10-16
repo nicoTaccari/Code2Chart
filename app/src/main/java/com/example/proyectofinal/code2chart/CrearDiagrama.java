@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,11 +19,11 @@ import java.net.URISyntaxException;
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
     private Button obtenerUri, generar;
-    private EditText nombreTitulo;
+    private EditText nombreTitulo, nombreAutor;
     private ImageView icono;
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
-    private String tipo;
+    private String tipo, titulo, autor;
 
     private String archivo;
     private Uri uri;
@@ -42,6 +43,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
         nombreTitulo = (EditText) findViewById(R.id.nombreTitulo);
+        nombreAutor = (EditText) findViewById(R.id.nombreAutor);
 
     }
 
@@ -118,10 +120,15 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-                /*if(nombreTitulo.getText().toString().equals("")){
-                    Toast.makeText(this, "Completar todos los campos", Toast.LENGTH_SHORT).show();
-                }else {*/
-                this.enviarOnClick(v);
+                titulo = nombreTitulo.getText().toString();
+                autor = nombreAutor.getText().toString();
+                if(TextUtils.isEmpty(titulo) && titulo.trim().matches("") && TextUtils.isEmpty(autor) && autor.trim().matches("")) {
+                    nombreTitulo.setError("Título inválido");
+                    nombreAutor.setError("Autor inválido");
+                    return;
+                }else {
+                    this.enviarOnClick(v);
+                }
                 break;
         }
     }
@@ -129,7 +136,10 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     public void enviarOnClick(View v){
         Intent intentDiagrama = new Intent(this, Diagrama.class);
         intentDiagrama.putExtra("uriDelArchivo", uri.toString());
+        intentDiagrama.putExtra("tituloMando", titulo);
+        intentDiagrama.putExtra("autorMando", autor);
         startActivity(intentDiagrama);
+        finish();
     }
 
 }

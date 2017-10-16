@@ -33,9 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,7 +68,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     private int cantidadTotalDeBucles = 0;
 
-    private String uri;
+    private String uri, titulo, autor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +88,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         Bundle bundleDiagrama = getIntent().getExtras();
         if(bundleDiagrama != null){
             uri = bundleDiagrama.getString("uriDelArchivo");
+            titulo = bundleDiagrama.getString("tituloMando");
+            autor = bundleDiagrama.getString("autorMando");
         }
 
         diagram = diagramView.getDiagram();
@@ -393,36 +393,32 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent(this, MainActivity.class);
         switch (v.getId()){
             case R.id.guardar:
                 Bitmap bitmap = diagramView.getDrawingCache(true);
                 imagen.setImageBitmap(bitmap);
                 startSave();
-                startActivityMain();
+                startActivity(intent);
+                finish();
                 break;
             case R.id.descartar:
-                startActivityMain();
+                startActivity(intent);
+                finish();
                 break;
 
         }
     }
 
-    public void startActivityMain(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     public void startSave(){
         FileOutputStream fileOutputStream = null;
-        File file = getDisc();
+        File file = getFilesDir();
         if(!file.exists() && !file.mkdirs()){
             Toast.makeText(this, "Can´t create directory to save image", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyymmsshhmmss");
-        String date = simpleDateFormat.format(new Date());
-        String name = "Img"+date+".jpg";
+        String name = titulo + "." + autor + ".png";
         String file_name = file.getAbsolutePath()+"/"+name;
         File new_file = new File(file_name);
         try{
@@ -437,18 +433,5 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        refreshGallery(new_file);
     }
-
-    public void refreshGallery(File file){
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        intent.setData(Uri.fromFile(file));
-        sendBroadcast(intent);
-    }
-
-    public File getDisc(){
-        File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        return new File(file, "Image Demo");
-    }
-
 }
