@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
@@ -23,10 +24,11 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     private ImageView icono;
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
-    private String url, tipo, titulo, autor;
+    private String url, tipo;
 
     private String archivo = "nada";
     private Uri uri;
+    private ArrayList<EditText> listaEditText = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +44,13 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
+
+        nombreUrl = (EditText) findViewById(R.id.url);
+
         nombreTitulo = (EditText) findViewById(R.id.nombreTitulo);
         nombreAutor = (EditText) findViewById(R.id.nombreAutor);
-        nombreUrl = (EditText) findViewById(R.id.url);
+        listaEditText.add(nombreTitulo);
+        listaEditText.add(nombreAutor);
 
     }
 
@@ -121,49 +127,56 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-                titulo = nombreTitulo.getText().toString();
-                autor = nombreAutor.getText().toString();
-                url = nombreUrl.getText().toString();
-                boolean error = false;
 
-                if (TextUtils.isEmpty(titulo) && titulo.trim().matches("")) {
-                    nombreTitulo.setError("Título inválido");
-                    error = true;
-                } else{
-                    error = false;
-                }
-
-                if (TextUtils.isEmpty(autor) && autor.trim().matches("")) {
-                    nombreAutor.setError("Autor inválido");
-                    error = true;
+                if(validarEditText(listaEditText)){
+                    this.enviarOnClick(v);
                 }else{
-                    error = false;
-                }
-
-                if (TextUtils.isEmpty(url) && url.trim().matches("") && !archivo.substring(archivo.length() - 2).equals(".c")) {
-                    nombreUrl.setError("Url inválida");
-                    Toast.makeText(this, "Archivo o url de Github inválidos", Toast.LENGTH_LONG).show();
-                    error = true;
-                }else {
-                    error = false;
-                }
-
-                if(error == true){
                     return;
                 }
-
-                this.enviarOnClick(v);
                 break;
         }
+    }
+
+    private boolean validarEditText(ArrayList<EditText> textos){
+        boolean error = true;
+
+        for(int i=0; i<textos.size(); i++){
+            EditText currentField = textos.get(i);
+            String string = currentField.getText().toString();
+            if(TextUtils.isEmpty(string) && string.trim().matches("")){
+                currentField.setError("Incorrecto");
+                error = false;
+            }
+        }
+
+        url = nombreUrl.getText().toString();
+        if (TextUtils.isEmpty(url) && url.trim().matches("") && !archivo.substring(archivo.length() - 2).equals(".c")) {
+            Toast.makeText(this, "Archivo o url de Github inválidos", Toast.LENGTH_LONG).show();
+            error = false;
+        }
+
+        if(!TextUtils.isEmpty(url) && !url.trim().matches("") && archivo.substring(archivo.length() - 2).equals(".c")){
+            Toast.makeText(this, "Elegir un archivo o una url", Toast.LENGTH_LONG).show();
+            error = false;
+        }
+
+        return error;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        super.onBackPressed();
     }
 
     public void enviarOnClick(View v){
         Intent intentDiagrama = new Intent(this, Diagrama.class);
         intentDiagrama.putExtra("uriDelArchivo", uri.toString());
-        intentDiagrama.putExtra("tituloMando", titulo);
-        intentDiagrama.putExtra("autorMando", autor);
+        intentDiagrama.putExtra("tituloMando", nombreTitulo.getText().toString());
+        intentDiagrama.putExtra("autorMando", nombreTitulo.getText().toString());
         startActivity(intentDiagrama);
-        
+
         finish();
     }
 

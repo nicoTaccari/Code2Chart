@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CrearDiagrama.class);
                 startActivity(intent);
+                finish();
             }
         });
 
