@@ -1,11 +1,13 @@
 package com.example.proyectofinal.code2chart;
 
-import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,13 +23,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.MimeTypeMap;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -39,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Archivo> archivos;
 
     private SearchView searchView;
-
-    private String titulo, autor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         listaDeArchivos.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listaDeArchivos.setMultiChoiceModeListener(this);
 
+
+
     }
 
     @Override
@@ -138,10 +142,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_send) {
+            listaDeArchivos.setItemChecked(1, true);//position 1
+            listaDeArchivos.setSelection(1);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -175,20 +178,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             archivos.add(archivo);
         }
-    }
-
-    public String getMimeType(Uri uri) {
-        String mimeType = null;
-        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
-            ContentResolver cr = getApplicationContext().getContentResolver();
-            mimeType = cr.getType(uri);
-        } else {
-            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
-                    .toString());
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                    fileExtension.toLowerCase());
-        }
-        return mimeType;
     }
 
     /*---------Ocultar teclado y cerrar search cuando se toca en la pantalla---------*/
@@ -254,13 +243,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             case (R.id.action_delete):
                 for (Archivo arch: toDeleteItems) {
+                    File deletef = new File(arch.getUri().getPath());
+                    deletef.delete();
                     archivos.remove(arch);
                 }
+                Toast.makeText(this, "Eliminación Correcta", Toast.LENGTH_SHORT).show();
+                mode.finish();
+                return true;
+            case (R.id.action_share):
+                ArrayList<Uri> uris = new ArrayList<>();
+                Intent shareintent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                shareintent.setType("image/png");
+                for(Archivo arch: toDeleteItems){
+                    try {
+                        enviar(arch.getUri(), uris);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                shareintent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                startActivity(Intent.createChooser(shareintent, "Compartir"));
                 mode.finish();
                 return true;
             default:
                 return false;
         }
+    }
+
+    public void enviar(Uri unaUri, ArrayList<Uri> uris) throws IOException {
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), unaUri);
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, unaUri.toString());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        OutputStream outstream;
+        try {
+            outstream = getContentResolver().openOutputStream(uri);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outstream);
+            outstream.close();
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+
+        uris.add(uri);
     }
 
     @Override

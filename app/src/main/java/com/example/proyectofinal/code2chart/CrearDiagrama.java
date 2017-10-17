@@ -167,14 +167,21 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     public void onBackPressed() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     public void enviarOnClick(View v){
         Intent intentDiagrama = new Intent(this, Diagrama.class);
         intentDiagrama.putExtra("uriDelArchivo", uri.toString());
         intentDiagrama.putExtra("tituloMando", nombreTitulo.getText().toString());
-        intentDiagrama.putExtra("autorMando", nombreTitulo.getText().toString());
+        intentDiagrama.putExtra("autorMando", nombreAutor.getText().toString());
         startActivity(intentDiagrama);
 
         finish();

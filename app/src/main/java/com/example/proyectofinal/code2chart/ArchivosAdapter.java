@@ -78,7 +78,7 @@ public class ArchivosAdapter extends BaseAdapter implements Filterable {
 
                 //TODO aplicar collections para un codigo mas limpio
                 for (Archivo arch: filterListMisDatos){
-                    if (arch.getTitulo().toUpperCase().contains(constraint) && arch.getClass().isAssignableFrom(Archivo.class)){
+                    if ((arch.getTitulo().toUpperCase().contains(constraint) || arch.getAutor().toUpperCase().contains(constraint)) && arch.getClass().isAssignableFrom(Archivo.class)){
                         Archivo archivo = new Archivo(arch.getTitulo(), arch.getAutor());
                         filters.add(archivo);
                     }

@@ -24,7 +24,7 @@ public class NodoHandler {
                 diagramaNodo.setShape(fromId("Start"));
                 break;
 
-            case "decision":
+            case "decisiÃ³n":
 
                 diagramaNodo.setShape(fromId("Decision"));
                 diagramaNodo.setAnchorPattern(AnchorPattern.fromId("Decision2In2Out"));

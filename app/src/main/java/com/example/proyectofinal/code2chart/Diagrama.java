@@ -1,6 +1,5 @@
 package com.example.proyectofinal.code2chart;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
@@ -71,9 +70,10 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     private String uri, titulo, autor;
 
+    private String xmlName = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String path = null;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagrama);
@@ -98,8 +98,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         diagram = diagramView.getDiagram();
 
         try {
-            path = magia(uri, getApplicationContext());
-            loadGraph(path, diagram);
+
+            loadGraph(magia(uri), diagram);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -135,8 +135,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         super.onSaveInstanceState(outState);
     }
 
-    public String magia(String unaUri, Context ctx) throws Exception {
-        String xmlName = new String("xml");
+    public String magia(String unaUri) throws Exception {
+        xmlName = new String(Environment.getExternalStorageDirectory()+File.separator+"xml");
 
         Uri myUri = Uri.parse(unaUri);
         InputStream inputStream = getContentResolver().openInputStream(myUri);
@@ -152,21 +152,23 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         ParserToXmlAdapter adapter = new ParserToXmlAdapter();
         LinkedList<ASTContainer> list = adapter.getConvertedList(ast);
 
-        XmlBuilder builder = new XmlBuilder(xmlName, ctx);
+        XmlBuilder builder = new XmlBuilder(xmlName);
         builder.setXmlStructure();
 
-        for(int i=0; i < list.size(); ++i){
+        for(int i = 0 ; i<list.size(); ++i){
             builder.appendNode(list.get(i).getId(), list.get(i).getTipo(), list.get(i).getContent());
-            if (list.get(i).getTipo() == "decision") {
-                builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "decision");
-            } else{
+            if (list.get(i).getTipo() == "decisiÃ³n") {
+                builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "decisiÃ³n");
+            } else {
                 builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "");
             }
         }
 
         builder.build();
 
-        return this.getFilesDir().getAbsolutePath() + '/' + xmlName;
+        String resultado = builder.getFile().getAbsolutePath();
+
+        return resultado;
     }
 
     public String convertStreamToString(InputStream is) throws Exception {
@@ -254,7 +256,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             //nuevocodigo
             String tipo = node.getAttribute("tipo");
             switch (tipo) {
-                case "decision":
+                case "decisiÃ³n":
                     nodosDecision.add(node.getAttribute("id"));
                     break;
 
@@ -291,7 +293,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
                                 nodosNoDecision.add(nodoInside.getAttribute("id"));
                                 break;
 
-                            case "decision":
+                            case "decisiÃ³n":
                                 ShapeNode nodoDecision = dibujarUnNodo(bounds, nodoInside, nodeMap);
                                 listasDeNodosParaBucles.get(enDonde).add(nodoDecision);
                                 nodosDecision.add(nodoInside.getAttribute("id"));
@@ -397,16 +399,19 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(this, MainActivity.class);
+        File fdelete = new File(xmlName);
         switch (v.getId()){
             case R.id.guardar:
                 Bitmap bitmap = diagramView.getDrawingCache(true);
                 imagen.setImageBitmap(bitmap);
                 startSave();
                 startActivity(intent);
+                fdelete.delete();
                 finish();
                 break;
             case R.id.descartar:
                 startActivity(intent);
+                fdelete.delete();
                 finish();
                 break;
 

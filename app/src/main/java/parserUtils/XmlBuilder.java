@@ -1,14 +1,9 @@
 package parserUtils;
 
-import android.content.Context;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.File;
 import java.util.LinkedList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,13 +16,10 @@ import javax.xml.transform.stream.StreamResult;
 
 import exceptions.UnableToCreateFileException;
 
-import static android.content.Context.MODE_PRIVATE;
-import static android.os.ParcelFileDescriptor.MODE_WORLD_READABLE;
-
 public class XmlBuilder {
 	
 	private Document doc;
-	private FileOutputStream file;
+	private File file;
 	private TransformerFactory transformerFactory;
 	private Transformer transformer;
 	private DOMSource source;
@@ -35,20 +27,8 @@ public class XmlBuilder {
 	private Element nodeElement;
 	private Element linksElement;
 
-	public XmlBuilder(String fileName, Context ctx){
-
-        try {
-            this.file = ctx.openFileOutput(fileName,  MODE_PRIVATE);
-            //OutputStreamWriter osw = new OutputStreamWriter(this.file);
-            //osw.write();
-            //osw.flush();
-            //osw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-		//this.file = new File(fileName);
+	public XmlBuilder(String fileName){
+		this.file = new File(fileName);
 	}
 	
 	public XmlBuilder setXmlStructure(){
@@ -180,7 +160,7 @@ public class XmlBuilder {
 	}
 	
 	/*--------------------GETTERS PARA TESTS-----------------*/
-	public FileOutputStream getFile() {
+	public File getFile() {
 		return file;
 	}
 
