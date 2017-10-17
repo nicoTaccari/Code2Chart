@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -26,8 +27,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +48,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener, GoogleApiClient.OnConnectionFailedListener {
 
     private ListView listaDeArchivos;
     private ArchivosAdapter adapterArchivos;
@@ -43,6 +56,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Archivo> archivos;
 
     private SearchView searchView;
+
+    private GoogleApiClient googleApiClient;
+    public static final int SIGN_IN_CODE = 777;
+    private ImageView imagenUsuario;
+    private TextView nombreUsuario, correoUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +88,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /*seteo el navigation drawer*/
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        View hView = navigationView.getHeaderView(0);
+        imagenUsuario = (ImageView) hView.findViewById(R.id.imagenUsuario);
+        nombreUsuario = (TextView) hView.findViewById(R.id.nombreUsuario);
+        correoUsuario = (TextView) hView.findViewById(R.id.correoUsuario);
+
+        /*GoogleLogin*/
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this,this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
+                .build();
 
         /*inicializo los arrays de archivos*/
         archivos = new ArrayList<>();
@@ -98,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -142,9 +176,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_send) {
-            listaDeArchivos.setItemChecked(1, true);//position 1
-            listaDeArchivos.setSelection(1);
+        switch (item.getItemId()){
+            case R.id.googleLogin:
+                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(intent, SIGN_IN_CODE);
+                break;
+            case R.id.googleLogout:
+                logOut();
+                break;
+            default:
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -304,6 +345,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             toDeleteItems.remove(adapterArchivos.getItem(position));
         }
+    }
+
+    /*GoogleLogin*/
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == SIGN_IN_CODE){
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        if(result.isSuccess()){
+            GoogleSignInAccount account = result.getSignInAccount();
+            nombreUsuario.setText(account.getDisplayName());
+            correoUsuario.setText(account.getEmail());
+            Glide.with(this).load(account.getPhotoUrl()).into(imagenUsuario);
+        }else {
+            Toast.makeText(this, "No se pudo iniciar sesión", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void logOut() {
+        Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                if(status.isSuccess()){
+                    nombreUsuario.setText("Android");
+                    correoUsuario.setText("android@android.com");
+                    imagenUsuario.setImageResource(R.drawable.common_google_signin_btn_icon_light);
+                }else{
+                    Toast.makeText(getApplicationContext(),"No se pudo cerrar sesion",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }

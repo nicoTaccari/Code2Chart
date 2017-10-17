@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Comunicación">
+    <item android:title="Google Login">
         <menu>
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Enviar" />
+                android:id="@+id/googleLogin"
+                android:icon="@drawable/common_google_signin_btn_icon_dark_disabled"
+                android:title="Iniciar sesión con Google"/>
+
+            <item
+                android:id="@+id/googleLogout"
+                android:icon="@drawable/common_google_signin_btn_icon_dark_disabled"
+                android:title="Cerrar Sesión"/>
+
         </menu>
     </item>
+
+
 
 </menu>
