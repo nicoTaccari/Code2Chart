@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -134,7 +135,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     }
 
     public String magia(String unaUri) throws Exception {
-        xmlName = new String(getFilesDir()+File.separator+"xml");
+        xmlName = new String(Environment.getExternalStorageDirectory()+File.separator+"xml");
 
         Uri myUri = Uri.parse(unaUri);
         InputStream inputStream = getContentResolver().openInputStream(myUri);
