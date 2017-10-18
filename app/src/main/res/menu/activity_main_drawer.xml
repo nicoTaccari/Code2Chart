@@ -4,14 +4,9 @@
     <item android:title="Google Login">
         <menu>
             <item
-                android:id="@+id/googleLogin"
-                android:icon="@drawable/common_google_signin_btn_icon_dark_disabled"
-                android:title="Iniciar sesión con Google"/>
-
-            <item
-                android:id="@+id/googleLogout"
-                android:icon="@drawable/common_google_signin_btn_icon_dark_disabled"
-                android:title="Cerrar Sesión"/>
+                android:id="@+id/share"
+                android:icon="?attr/actionModeShareDrawable"
+                android:title="Compartir" />
 
         </menu>
     </item>

@@ -32,4 +32,27 @@
         android:src="@android:drawable/ic_input_add"
         android:tint="@color/colorBackground"/>
 
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googleLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:elevation="6dp"/>
+
+    <Button
+        android:id="@+id/googleLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cerrar sesión"
+        android:textAllCaps="false"
+        android:textSize="10dp"
+        android:textColor="#fff"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:elevation="6dp"
+        android:background="#ff0000"
+        android:visibility="invisible"/>
+
+
 </android.support.design.widget.CoordinatorLayout>

@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -38,6 +39,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -55,9 +57,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<Archivo> toDeleteItems;
     private ArrayList<Archivo> archivos;
 
+    private Button logOutButton;
+
     private SearchView searchView;
 
     private GoogleApiClient googleApiClient;
+    private SignInButton signInButton;
     public static final int SIGN_IN_CODE = 777;
     private ImageView imagenUsuario;
     private TextView nombreUsuario, correoUsuario;
@@ -103,6 +108,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso)
                 .build();
 
+        signInButton = (SignInButton) findViewById(R.id.googleLogin);
+        logOutButton = (Button) findViewById(R.id.googleLogout);
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(intent, SIGN_IN_CODE);
+                logOutButton.setVisibility(View.VISIBLE);
+                signInButton.setVisibility(View.INVISIBLE);
+            }
+        });
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logOut();
+                signInButton.setVisibility(View.VISIBLE);
+                logOutButton.setVisibility(View.INVISIBLE);
+            }
+        });
+
+
         /*inicializo los arrays de archivos*/
         archivos = new ArrayList<>();
         toDeleteItems = new ArrayList<>();
@@ -126,9 +152,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /*listener para los long clicks*/
         listaDeArchivos.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listaDeArchivos.setMultiChoiceModeListener(this);
-
-
-
     }
 
 
@@ -177,12 +200,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         switch (item.getItemId()){
-            case R.id.googleLogin:
-                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent, SIGN_IN_CODE);
-                break;
-            case R.id.googleLogout:
-                logOut();
+            case R.id.share:
+
                 break;
             default:
                 break;
