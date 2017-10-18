@@ -31,7 +31,7 @@
                 android:layout_weight="5"
                 android:gravity="left|center"
                 android:textColor="#000"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
             <TextView
                 android:id="@+id/titulo"
@@ -41,7 +41,7 @@
                 android:layout_weight="5"
                 android:gravity="left|center"
                 android:textColor="#000"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:layout_marginLeft="2dp"/>
         </LinearLayout>
 
@@ -57,7 +57,7 @@
                 android:layout_weight="5"
                 android:gravity="left|center"
                 android:textColor="#000"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -68,8 +68,9 @@
             android:layout_weight="5"
             android:gravity="left|center"
             android:textColor="#000"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:layout_marginLeft="2dp"/>
+
         </LinearLayout>
     </LinearLayout>
 

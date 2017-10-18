@@ -14,13 +14,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.mindfusion.diagramming.ContainerNode;
-import com.mindfusion.diagramming.DecisionLayout;
 import com.mindfusion.diagramming.Diagram;
 import com.mindfusion.diagramming.DiagramNode;
 import com.mindfusion.diagramming.DiagramView;
 import com.mindfusion.diagramming.FitSize;
+import com.mindfusion.diagramming.LayeredLayout;
 import com.mindfusion.diagramming.ShapeNode;
-import com.mindfusion.diagramming.jlayout.Orientation;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -157,8 +156,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
         for(int i = 0 ; i<list.size(); ++i){
             builder.appendNode(list.get(i).getId(), list.get(i).getTipo(), list.get(i).getContent());
-            if (list.get(i).getTipo() == "decisiÃ³n") {
-                builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "decisiÃ³n");
+            if (list.get(i).getTipo() == "decisión") {
+                builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "decision");
             } else {
                 builder.appendLink(list.get(i).getFather(), list.get(i).getId(), "");
             }
@@ -256,7 +255,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             //nuevocodigo
             String tipo = node.getAttribute("tipo");
             switch (tipo) {
-                case "decisiÃ³n":
+                case "decisión":
                     nodosDecision.add(node.getAttribute("id"));
                     break;
 
@@ -293,7 +292,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
                                 nodosNoDecision.add(nodoInside.getAttribute("id"));
                                 break;
 
-                            case "decisiÃ³n":
+                            case "decision":
                                 ShapeNode nodoDecision = dibujarUnNodo(bounds, nodoInside, nodeMap);
                                 listasDeNodosParaBucles.get(enDonde).add(nodoDecision);
                                 nodosDecision.add(nodoInside.getAttribute("id"));
@@ -364,10 +363,10 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         //Conn esto, menciono que si bien tome un layout de Decision, tambien tengo que mapear todas las relaciones de cada
         //uno de los nodos, es decir si hay uno que es decision, necesariamente tengo que crear los 2 links de decision seguidos,
         //no uno, y luego otro.
-        DecisionLayout layout = new DecisionLayout();
-        layout.setHorizontalPadding(10);
-        layout.setVerticalPadding(10);
-        layout.setOrientation(Orientation.Vertical);
+        LayeredLayout layout = new LayeredLayout();
+        layout.setLayerDistance(10);
+        layout.setNodeDistance(25);
+        layout.setStraightenLongLinks(true);
         layout.arrange(diagrama);
 
         medidaDiagrama = diagrama.getContentBounds(false, true);
