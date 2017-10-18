@@ -27,6 +27,9 @@ public class ParserToXmlAdapter {
 
 	private void convert(AbstractSyntaxTreeConverter ast) {
 		if (ast.getType() != null) {
+			if(ast.getType().substring(0,3).equals("fin")){
+				ast.setContent("Fin");
+			}
 			ASTContainer container = new ASTContainer(ast.getId(), ast.getPrevious(), ast.getContent(), ast.getType());
 			list.add(container);
 		}
