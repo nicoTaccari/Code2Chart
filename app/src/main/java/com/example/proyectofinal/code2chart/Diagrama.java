@@ -325,10 +325,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             if (!node.getAttribute("tipo").matches(".*\\d+.*") && !tipo.equals("bucle")) {
                 dibujarUnNodo(bounds, node, nodeMap);
             }
-
         }
-
-
     }
 
     public ShapeNode dibujarUnNodo(RectF bounds, Element node, HashMap<String, DiagramNode> nodeMapFuncion){
@@ -424,7 +421,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         FileOutputStream fileOutputStream = null;
         File file = getFilesDir();
         if(!file.exists() && !file.mkdirs()){
-            Toast.makeText(this, "Can´t create directory to save image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No se puede crear el directorio", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -435,7 +432,6 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             fileOutputStream = new FileOutputStream(new_file);
             Bitmap bitmap = diagramView.getDrawingCache(true);
             bitmap.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream);
-            Toast.makeText(this, "Save image success",Toast.LENGTH_SHORT).show();
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (FileNotFoundException e) {

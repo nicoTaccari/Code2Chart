@@ -64,14 +64,14 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
     private void showFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
+        intent.setType("text/x-c\n/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
             startActivityForResult(
-                    Intent.createChooser(intent, "Select a File to Upload"), FILE_SELECT_CODE);
+                    Intent.createChooser(intent, "Seleccione un archivo .c"), FILE_SELECT_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Por favor instale un Administrador de Archivos", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -151,12 +151,11 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
     private boolean validarEditText(ArrayList<EditText> textos){
         boolean error = true;
-
         for(int i=0; i<textos.size(); i++){
             EditText currentField = textos.get(i);
             String string = currentField.getText().toString();
-            if(TextUtils.isEmpty(string) || string.trim().matches("")){
-                currentField.setError("Incorrecto");
+            if(TextUtils.isEmpty(string) && string.trim().matches("")){
+                currentField.setError("Complete el campo");
                 error = false;
             }
         }
