@@ -67,7 +67,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     private int cantidadTotalDeBucles = 0;
 
-    private String uri, titulo, autor;
+    private String uri, titulo, autor, codigo;
 
     private String xmlName = null;
 
@@ -92,6 +92,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             uri = bundleDiagrama.getString("uriDelArchivo");
             titulo = bundleDiagrama.getString("tituloMando");
             autor = bundleDiagrama.getString("autorMando");
+            codigo = bundleDiagrama.getString("codigo");
         }
 
         diagram = diagramView.getDiagram();
@@ -136,12 +137,14 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     public String magia(String unaUri) throws Exception {
         xmlName = new String(Environment.getExternalStorageDirectory()+File.separator+"xml");
-
-        Uri myUri = Uri.parse(unaUri);
-        InputStream inputStream = getContentResolver().openInputStream(myUri);
-
-        String filePreParse = convertStreamToString(inputStream);
-
+        String filePreParse = "";
+        if(codigo.equals("vieneVacío")) {
+            Uri myUri = Uri.parse(unaUri);
+            InputStream inputStream = getContentResolver().openInputStream(myUri);
+            filePreParse = convertStreamToString(inputStream);
+        }else{
+            filePreParse = codigo;
+        }
         CCompiler compiler = new CCompiler();
         AbstractSyntaxTreeConverter ast = compiler.compile(filePreParse);
 

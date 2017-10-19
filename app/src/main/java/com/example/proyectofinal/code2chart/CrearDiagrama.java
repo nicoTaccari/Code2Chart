@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,19 +15,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
-    private Button generar, obtenerUri;
+    private Button generar, obtenerUri, eliminarUri;
     private EditText nombreUrl, nombreTitulo, nombreAutor;
     private ImageView icono;
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
     private String url, tipo;
 
-    private String archivo = "nada";
+    private String archivo = "Seleccionar archivo";
     private Uri uri;
     private ArrayList<EditText> listaEditText = new ArrayList<>();
 
@@ -41,6 +47,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
         obtenerUri = (Button) findViewById(R.id.obtenerUri);
         obtenerUri.setOnClickListener(this);
+        eliminarUri = (Button) findViewById(R.id.eliminarUri);
+        eliminarUri.setOnClickListener(this);
 
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
@@ -125,13 +133,18 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.obtenerUri:
                 showFileChooser();
+                eliminarUri.setVisibility(View.VISIBLE);
+                obtenerUri.setVisibility(View.INVISIBLE);
                 break;
             case R.id.generar:
                 if(validarEditText(listaEditText)){
                     this.enviarOnClick(v);
-                }else{
-                    return;
                 }
+                break;
+            case R.id.eliminarUri:
+                uriTexto.setText("Seleccionar archivo");
+                eliminarUri.setVisibility(View.VISIBLE);
+                obtenerUri.setVisibility(View.INVISIBLE);
                 break;
         }
     }
@@ -149,12 +162,23 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         }
 
         url = nombreUrl.getText().toString();
-        if (TextUtils.isEmpty(url) && url.trim().matches("") && !archivo.substring(archivo.length() - 2).equals(".c")) {
-            Toast.makeText(this, "Archivo o url de Github inválidos", Toast.LENGTH_LONG).show();
+
+        if (!archivo.substring(archivo.length() - 2).equals(".c") && !archivo.equals("Seleccionar archivo") && TextUtils.isEmpty(url) && url.trim().matches("")) {
+            Toast.makeText(this, "Archivo inválido", Toast.LENGTH_LONG).show();
             error = false;
         }
 
-        if(!TextUtils.isEmpty(url) && !url.trim().matches("") && archivo.substring(archivo.length() - 2).equals(".c")){
+        if (!TextUtils.isEmpty(url) && !url.trim().matches("") && !url.substring(url.length() - 2).equals(".c")&& archivo.equals("Seleccionar archivo")){
+            Toast.makeText(this, "Url de Github inválida", Toast.LENGTH_LONG).show();
+            error = false;
+        }
+
+        if((!TextUtils.isEmpty(url) || !url.trim().matches("")) && !archivo.equals("Seleccionar archivo")){
+            Toast.makeText(this, "Elegir un archivo o una url", Toast.LENGTH_LONG).show();
+            error = false;
+        }
+
+        if((TextUtils.isEmpty(url) && url.trim().matches("")) && archivo.equals("Seleccionar archivo")){
             Toast.makeText(this, "Elegir un archivo o una url", Toast.LENGTH_LONG).show();
             error = false;
         }
@@ -177,13 +201,43 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     }
 
     public void enviarOnClick(View v){
+        String codigo = "vieneVacío";
         Intent intentDiagrama = new Intent(this, Diagrama.class);
-        intentDiagrama.putExtra("uriDelArchivo", uri.toString());
         intentDiagrama.putExtra("tituloMando", nombreTitulo.getText().toString());
         intentDiagrama.putExtra("autorMando", nombreAutor.getText().toString());
+        if(!TextUtils.isEmpty(url) && !url.trim().matches("") && url.substring(url.length() - 2).equals(".c")) {
+            try {
+                codigo = escribirEnFS(url);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            intentDiagrama.putExtra("uriDelArchivo", uri.toString());
+        }
+        intentDiagrama.putExtra("codigo", codigo);
         startActivity(intentDiagrama);
-
         finish();
+    }
+
+    public static String escribirEnFS(String dirUrl) throws IOException {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        //set connection and url
+        URL url = new URL(dirUrl);
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setDoInput(true);
+
+        String completo = new String();
+
+        //read and store in my string variable the whole content
+        BufferedReader reader = new BufferedReader ( new InputStreamReader(connection.getInputStream()));
+        for (String line; (line = reader.readLine()) != null;) {
+            completo = completo.concat(line);
+        }
+        reader.close();
+
+        return completo;
     }
 
 }
