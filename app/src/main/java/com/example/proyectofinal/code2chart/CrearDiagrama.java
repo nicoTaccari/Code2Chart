@@ -138,7 +138,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
     private boolean validarEditText(ArrayList<EditText> textos){
         boolean error = true;
-
         for(int i=0; i<textos.size(); i++){
             EditText currentField = textos.get(i);
             String string = currentField.getText().toString();
@@ -182,7 +181,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         intentDiagrama.putExtra("tituloMando", nombreTitulo.getText().toString());
         intentDiagrama.putExtra("autorMando", nombreAutor.getText().toString());
         startActivity(intentDiagrama);
-
         finish();
     }
 
