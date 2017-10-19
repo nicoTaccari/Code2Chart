@@ -143,8 +143,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.eliminarUri:
                 uriTexto.setText("Seleccionar archivo");
-                eliminarUri.setVisibility(View.VISIBLE);
-                obtenerUri.setVisibility(View.INVISIBLE);
+                eliminarUri.setVisibility(View.INVISIBLE);
+                obtenerUri.setVisibility(View.VISIBLE);
                 break;
         }
     }
