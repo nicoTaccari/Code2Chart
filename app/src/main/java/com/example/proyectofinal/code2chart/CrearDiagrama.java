@@ -133,8 +133,10 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.obtenerUri:
                 showFileChooser();
-                eliminarUri.setVisibility(View.VISIBLE);
-                obtenerUri.setVisibility(View.INVISIBLE);
+                if(!uriTexto.equals("")){
+                    eliminarUri.setVisibility(View.VISIBLE);
+                    obtenerUri.setVisibility(View.INVISIBLE);
+                }
                 break;
             case R.id.generar:
                 if(validarEditText(listaEditText)){
@@ -145,6 +147,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 uriTexto.setText("Seleccionar archivo");
                 eliminarUri.setVisibility(View.INVISIBLE);
                 obtenerUri.setVisibility(View.VISIBLE);
+                archivo = "Seleccionar archivo";
                 break;
         }
     }
@@ -172,7 +175,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
             error = false;
         }
 
-        if((!TextUtils.isEmpty(url) || !url.trim().matches("")) && !archivo.equals("Seleccionar archivo")){
+        if((!TextUtils.isEmpty(url) || !url.trim().matches("")) && (!archivo.equals("Seleccionar archivo") ||archivo.substring(archivo.length() - 2).equals(".c"))){
             Toast.makeText(this, "Elegir un archivo o una url", Toast.LENGTH_LONG).show();
             error = false;
         }

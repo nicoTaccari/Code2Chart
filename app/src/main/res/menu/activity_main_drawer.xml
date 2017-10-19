@@ -4,9 +4,9 @@
     <item android:title="Google Login">
         <menu>
             <item
-                android:id="@+id/share"
-                android:icon="?attr/actionModeShareDrawable"
-                android:title="Compartir" />
+                android:id="@+id/aboutUs"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Sobre nosotros" />
 
         </menu>
     </item>

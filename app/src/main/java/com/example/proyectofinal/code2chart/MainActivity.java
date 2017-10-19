@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         switch (item.getItemId()){
-            case R.id.share:
+            case R.id.aboutUs:
 
                 break;
             default:
