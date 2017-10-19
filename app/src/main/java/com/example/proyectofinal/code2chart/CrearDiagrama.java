@@ -127,7 +127,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-
                 if(validarEditText(listaEditText)){
                     this.enviarOnClick(v);
                 }else{

@@ -292,7 +292,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
                                 nodosNoDecision.add(nodoInside.getAttribute("id"));
                                 break;
 
-                            case "decision":
+                            case "decisión":
                                 ShapeNode nodoDecision = dibujarUnNodo(bounds, nodoInside, nodeMap);
                                 listasDeNodosParaBucles.get(enDonde).add(nodoDecision);
                                 nodosDecision.add(nodoInside.getAttribute("id"));
