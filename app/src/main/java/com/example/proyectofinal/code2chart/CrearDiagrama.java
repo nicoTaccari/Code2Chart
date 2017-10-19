@@ -127,7 +127,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 showFileChooser();
                 break;
             case R.id.generar:
-
                 if(validarEditText(listaEditText)){
                     this.enviarOnClick(v);
                 }else{
@@ -143,7 +142,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         for(int i=0; i<textos.size(); i++){
             EditText currentField = textos.get(i);
             String string = currentField.getText().toString();
-            if(TextUtils.isEmpty(string) && string.trim().matches("")){
+            if(TextUtils.isEmpty(string) || string.trim().matches("")){
                 currentField.setError("Incorrecto");
                 error = false;
             }

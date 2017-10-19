@@ -391,6 +391,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Glide.with(this).load(account.getPhotoUrl()).into(imagenUsuario);
         }else {
             Toast.makeText(this, "No se pudo iniciar sesión", Toast.LENGTH_SHORT).show();
+            signInButton.setVisibility(View.VISIBLE);
+            logOutButton.setVisibility(View.INVISIBLE);
         }
     }
 
