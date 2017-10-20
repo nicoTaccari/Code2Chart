@@ -48,6 +48,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener, GoogleApiClient.OnConnectionFailedListener {
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /*listener para los long clicks*/
         listaDeArchivos.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listaDeArchivos.setMultiChoiceModeListener(this);
+
     }
 
 
@@ -221,7 +224,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (cantidadDeArchivos != 0) {
             this.setearAdapter(files, cantidadDeArchivos, archivos);
         }
+
+        Collections.sort(archivos, new Comparator<Archivo>() {
+            @Override
+            public int compare(Archivo arch1, Archivo arch2) {
+                return arch1.getTitulo().compareToIgnoreCase(arch2.getTitulo());
+            }
+        });
+
         adapterArchivos = new ArchivosAdapter(this, archivos);
+
         listaDeArchivos.setAdapter(adapterArchivos);
     }
 
