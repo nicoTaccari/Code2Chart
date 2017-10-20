@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 shareintent.setType("image/png");
                 for(Archivo arch: toDeleteItems){
                     try {
-                        enviar(arch.getUri(), uris);
+                        enviar(arch.getUri(), uris, arch.getTitulo(), arch.getAutor());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -342,11 +342,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void enviar(Uri unaUri, ArrayList<Uri> uris) throws IOException {
+    public void enviar(Uri unaUri, ArrayList<Uri> uris, String titulo, String autor) throws IOException {
         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), unaUri);
 
         ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, unaUri.toString());
+        values.put(MediaStore.Images.Media.TITLE, titulo + "." + autor);
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, titulo + "." + autor + ".png");
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
         Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
@@ -360,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         uris.add(uri);
+
     }
 
     @Override
