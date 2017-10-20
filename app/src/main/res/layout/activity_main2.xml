@@ -93,7 +93,8 @@
         android:layout_above="@+id/nombreAutor"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="14dp" />
+        android:layout_marginBottom="14dp"
+        android:maxLength="25"/>
 
     <TextView
         android:id="@+id/autor"
@@ -117,7 +118,8 @@
         android:layout_marginBottom="105dp"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:maxLength="25"/>
 
     <Button
         android:id="@+id/generar"
