@@ -19,6 +19,7 @@ import com.mindfusion.diagramming.DiagramNode;
 import com.mindfusion.diagramming.DiagramView;
 import com.mindfusion.diagramming.FitSize;
 import com.mindfusion.diagramming.LayeredLayout;
+import com.mindfusion.diagramming.ShadowsStyle;
 import com.mindfusion.diagramming.ShapeNode;
 
 import org.w3c.dom.Document;
@@ -96,9 +97,9 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         }
 
         diagram = diagramView.getDiagram();
+        diagram.setShadowsStyle(ShadowsStyle.None);
 
         try {
-
             loadGraph(magia(uri), diagram);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -127,12 +128,6 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
         diagramView.setLayoutParams(testLP);
 
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState){
-        outState.putString("diagram", diagramView.saveToString());
-        super.onSaveInstanceState(outState);
     }
 
     public String magia(String unaUri) throws Exception {

@@ -1,13 +1,17 @@
 package com.example.proyectofinal.code2chart;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
@@ -30,9 +36,11 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     private ImageView icono;
     private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
-    private String url, tipo;
+    private String url;
 
+    private String tipo = "nada";
     private String archivo = "Seleccionar archivo";
+
     private Uri uri;
     private ArrayList<EditText> listaEditText = new ArrayList<>();
 
@@ -59,6 +67,8 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         nombreAutor = (EditText) findViewById(R.id.nombreAutor);
         listaEditText.add(nombreTitulo);
         listaEditText.add(nombreAutor);
+
+        uri = Uri.parse("vacía");
 
     }
 
@@ -88,6 +98,13 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                         seleccionarIcono();
                     }catch(Exception e){
                         // Eat it
+                    }
+                    if(!uri.toString().equals("vacía")){
+                        eliminarUri.setVisibility(View.VISIBLE);
+                        obtenerUri.setVisibility(View.INVISIBLE);
+                    }else {
+                        eliminarUri.setVisibility(View.INVISIBLE);
+                        obtenerUri.setVisibility(View.VISIBLE);
                     }
                 }
             break;
@@ -133,10 +150,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.obtenerUri:
                 showFileChooser();
-                if(!uriTexto.equals("")){
-                    eliminarUri.setVisibility(View.VISIBLE);
-                    obtenerUri.setVisibility(View.INVISIBLE);
-                }
                 break;
             case R.id.generar:
                 if(validarEditText(listaEditText)){
@@ -148,6 +161,9 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 eliminarUri.setVisibility(View.INVISIBLE);
                 obtenerUri.setVisibility(View.VISIBLE);
                 archivo = "Seleccionar archivo";
+                tipo = "nada";
+                uri = Uri.parse("vacía");
+                seleccionarIcono();
                 break;
         }
     }
@@ -165,27 +181,58 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
         url = nombreUrl.getText().toString();
 
+        //Archivo inválido -> no termina en .c
         if (!archivo.substring(archivo.length() - 2).equals(".c") && !archivo.equals("Seleccionar archivo") && TextUtils.isEmpty(url) && url.trim().matches("")) {
             Toast.makeText(this, "Archivo inválido", Toast.LENGTH_LONG).show();
             error = false;
         }
 
-        if (!TextUtils.isEmpty(url) && !url.trim().matches("") && !url.substring(url.length() - 2).equals(".c")&& archivo.equals("Seleccionar archivo")){
-            Toast.makeText(this, "Url de Github inválida", Toast.LENGTH_LONG).show();
-            error = false;
+        //Verificar URL
+        if (!TextUtils.isEmpty(url) && !url.trim().matches("") && archivo.equals("Seleccionar archivo")){
+            if(internetConnection()) {
+                if (!isValidUrl(url)) {
+                    Toast.makeText(this, "Url inválida", Toast.LENGTH_LONG).show();
+                    error = false;
+                }
+            }else{
+                Toast.makeText(this, "No hay conección a Internet", Toast.LENGTH_LONG).show();
+                error = false;
+            }
         }
 
-        if((!TextUtils.isEmpty(url) || !url.trim().matches("")) && (!archivo.equals("Seleccionar archivo") ||archivo.substring(archivo.length() - 2).equals(".c"))){
+        //Caso en el que pone un archivo y una url
+        if((!TextUtils.isEmpty(url) || !url.trim().matches("")) && (!archivo.equals("Seleccionar archivo") || archivo.substring(archivo.length() - 2).equals(".c"))){
             Toast.makeText(this, "Elegir un archivo o una url", Toast.LENGTH_LONG).show();
             error = false;
         }
 
+        //Caso en el que no pone ni archivo, ni una url
         if((TextUtils.isEmpty(url) && url.trim().matches("")) && archivo.equals("Seleccionar archivo")){
             Toast.makeText(this, "Elegir un archivo o una url", Toast.LENGTH_LONG).show();
             error = false;
         }
 
         return error;
+    }
+
+    private boolean isValidUrl(String url) {
+        Pattern p = Patterns.WEB_URL;
+        Matcher m = p.matcher(url.toLowerCase());
+        return m.matches();
+    }
+
+    public boolean internetConnection(){
+        ConnectivityManager connectivity = (ConnectivityManager) getApplicationContext()
+                .getSystemService(Service.CONNECTIVITY_SERVICE);
+        if(connectivity != null){
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if(info != null){
+                if(info.getState() == NetworkInfo.State.CONNECTED){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -207,21 +254,26 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         Intent intentDiagrama = new Intent(this, Diagrama.class);
         intentDiagrama.putExtra("tituloMando", nombreTitulo.getText().toString());
         intentDiagrama.putExtra("autorMando", nombreAutor.getText().toString());
-        if(!TextUtils.isEmpty(url) && !url.trim().matches("") && url.substring(url.length() - 2).equals(".c")) {
+        if(!TextUtils.isEmpty(url) && !url.trim().matches("") && url.substring(0,12).equals("https://raw.")) {
             try {
                 codigo = escribirEnFS(url);
             } catch (IOException e) {
                 e.printStackTrace();
+                Toast.makeText(this, "Url inválida", Toast.LENGTH_LONG).show();
+                return;
             }
-        }else{
-            intentDiagrama.putExtra("uriDelArchivo", uri.toString());
         }
-        intentDiagrama.putExtra("codigo", codigo);
-        startActivity(intentDiagrama);
-        finish();
+        if(codigo.equals("vieneVacío") && uriTexto.getText().toString().equals("Seleccionar archivo")){
+            Toast.makeText(this, "Url inválida", Toast.LENGTH_LONG).show();
+        }else {
+            intentDiagrama.putExtra("uriDelArchivo", uri.toString());
+            intentDiagrama.putExtra("codigo", codigo);
+            startActivity(intentDiagrama);
+            finish();
+        }
     }
 
-    public static String escribirEnFS(String dirUrl) throws IOException {
+    public String escribirEnFS(String dirUrl) throws IOException {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         //set connection and url
