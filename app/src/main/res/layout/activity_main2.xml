@@ -108,6 +108,19 @@
         android:layout_marginLeft="16dp"
         android:layout_marginBottom="115dp"/>
 
+    <TextView
+        android:id="@+id/nombreUsuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usuario"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="75dp"
+        android:layout_marginBottom="115dp"
+        android:visibility="invisible"/>
+
     <EditText
         android:id="@+id/nombreAutor"
         android:layout_width="290dp"

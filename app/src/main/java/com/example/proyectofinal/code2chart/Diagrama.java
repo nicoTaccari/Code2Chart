@@ -1,6 +1,5 @@
 package com.example.proyectofinal.code2chart;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.net.Uri;
@@ -392,19 +391,16 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(this, MainActivity.class);
         File fdelete = new File(xmlName);
         switch (v.getId()){
             case R.id.guardar:
                 Bitmap bitmap = diagramView.getDrawingCache(true);
                 imagen.setImageBitmap(bitmap);
                 startSave();
-                startActivity(intent);
                 fdelete.delete();
                 finish();
                 break;
             case R.id.descartar:
-                startActivity(intent);
                 fdelete.delete();
                 finish();
                 break;

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/editar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Editar Archivo"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:textSize="25dp"
+        android:textColor="@color/colorPrimary"/>
+
+    <EditText
+        android:id="@+id/nuevoTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Título nuevo"
+        android:maxLength="25"
+        android:singleLine="true"
+        android:textSize="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <EditText
+        android:id="@+id/nuevoAutor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLength="25"
+        android:singleLine="true"
+        android:textSize="20dp"
+        android:layout_marginTop="90dp"
+        android:layout_alignParentRight="true"
+        android:hint="Autor nuevo"
+        android:textColor="@color/colorPrimaryDark"/>
+
+    <Button
+        android:id="@+id/aceptar"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Aceptar"
+        android:textColor="@color/colorBackground"
+        android:background="@color/colorPrimary"
+        android:textAllCaps="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="155dp"
+        android:layout_marginRight="30dp"/>
+
+    <Button
+        android:id="@+id/cancelar"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Cancelar"
+        android:textColor="@color/colorBackground"
+        android:background="@color/colorPrimary"
+        android:textAllCaps="false"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="155dp"
+        android:layout_marginLeft="30dp"/>
+
+</RelativeLayout>

@@ -1,5 +1,6 @@
 package com.example.proyectofinal.code2chart;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,7 +54,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private ListView listaDeArchivos;
     private ArchivosAdapter adapterArchivos;
@@ -69,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView imagenUsuario;
     private TextView nombreUsuario, correoUsuario;
 
+    private AlertDialog dialog;
+    private EditText nuevoTitulo, nuevoAutor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +86,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CrearDiagrama.class);
+                intent.putExtra("usuario", nombreUsuario.getText().toString());
+                onStop();
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -112,24 +118,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         signInButton = (SignInButton) findViewById(R.id.googleLogin);
         logOutButton = (Button) findViewById(R.id.googleLogout);
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent, SIGN_IN_CODE);
-                logOutButton.setVisibility(View.VISIBLE);
-                signInButton.setVisibility(View.INVISIBLE);
-            }
-        });
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logOut();
-                signInButton.setVisibility(View.VISIBLE);
-                logOutButton.setVisibility(View.INVISIBLE);
-            }
-        });
-
+        signInButton.setOnClickListener(this);
+        logOutButton.setOnClickListener(this);
 
         /*inicializo los arrays de archivos*/
         archivos = new ArrayList<>();
@@ -157,7 +147,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
+    @Override
+    protected void onRestart() {
+        archivos = new ArrayList<>();
+        listarArchivos(getFilesDir(), archivos);
+        super.onRestart();
+    }
 
     @Override
     public void onBackPressed() {
@@ -249,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             archivo.setUri(Uri.fromFile(getFileStreamPath(nombreArchivo)));
 
             archivos.add(archivo);
+
         }
     }
 
@@ -337,9 +333,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(Intent.createChooser(shareintent, "Compartir"));
                 mode.finish();
                 return true;
+            case (R.id.action_edit):
+                if(toDeleteItems.size()==1){
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+                    View mView = getLayoutInflater().inflate(R.layout.dialog_edit, null);
+                    nuevoTitulo = (EditText) mView.findViewById(R.id.nuevoTitulo);
+                    nuevoAutor = (EditText) mView.findViewById(R.id.nuevoAutor);
+                    Button aceptar = (Button) mView.findViewById(R.id.aceptar);
+                    Button cancelar = (Button) mView.findViewById(R.id.cancelar);
+                    aceptar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(validarEditText(nuevoTitulo, nuevoAutor)){
+                                MainActivity.this.onStop();
+                            }
+                        }
+                    });
+                    cancelar.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    mBuilder.setView(mView);
+                    dialog = mBuilder.create();
+                    dialog.show();
+                }else{
+                    Toast.makeText(this, "Sólo se puede editar de a un elemento", Toast.LENGTH_SHORT).show();
+                }
+                return true;
             default:
                 return false;
         }
+    }
+
+    private boolean validarEditText(EditText nuevoTitulo, EditText nuevoAutor) {
+        boolean error = true;
+        ArrayList<EditText> textos = new ArrayList<>();
+        textos.add(nuevoTitulo);
+        textos.add(nuevoAutor);
+        for(int i=0; i<textos.size(); i++){
+            EditText currentField = textos.get(i);
+            String string = currentField.getText().toString();
+            if(TextUtils.isEmpty(string) && string.trim().matches("")){
+                currentField.setError("Complete el campo");
+                error = false;
+            }
+        }
+        return error;
     }
 
     public void enviar(Uri unaUri, ArrayList<Uri> uris, String titulo, String autor) throws IOException {
@@ -425,4 +466,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.googleLogin:
+                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(intent, SIGN_IN_CODE);
+                logOutButton.setVisibility(View.VISIBLE);
+                signInButton.setVisibility(View.INVISIBLE);
+                break;
+            case R.id.googleLogout:
+                logOut();
+                signInButton.setVisibility(View.VISIBLE);
+                logOutButton.setVisibility(View.INVISIBLE);
+                break;
+            default:
+            break;
+        }
+    }
 }

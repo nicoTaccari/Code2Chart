@@ -14,7 +14,6 @@ public class Archivo extends Activity {
         this.autor = unAutor;
     }
 
-
     public Uri getUri() {
         return uri;
     }
@@ -27,8 +26,16 @@ public class Archivo extends Activity {
         return titulo;
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
     public String getAutor() {
         return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
     }
 
 }

@@ -6,9 +6,9 @@
         android:checkable="true"
         android:enabled="true"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Delete"
+        android:title="Eliminar"
         android:visible="true"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_share"
@@ -17,5 +17,15 @@
         android:icon="@android:drawable/ic_menu_share"
         android:title="Compartir"
         android:visible="true"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_edit"
+        android:checkable="true"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Editar"
+        android:visible="true"
         app:showAsAction="ifRoom" />
+
 </menu>

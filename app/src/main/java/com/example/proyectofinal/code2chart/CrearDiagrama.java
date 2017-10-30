@@ -34,9 +34,9 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     private Button generar, obtenerUri, eliminarUri;
     private EditText nombreUrl, nombreTitulo, nombreAutor;
     private ImageView icono;
-    private TextView uriTexto;
+    private TextView uriTexto, usuario;
     private static final int FILE_SELECT_CODE = 0;
-    private String url;
+    private String url, nombreUsuario;
 
     private String tipo = "nada";
     private String archivo = "Seleccionar archivo";
@@ -61,14 +61,28 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
 
+        usuario = (TextView) findViewById(R.id.nombreUsuario);
+
         nombreUrl = (EditText) findViewById(R.id.url);
 
         nombreTitulo = (EditText) findViewById(R.id.nombreTitulo);
         nombreAutor = (EditText) findViewById(R.id.nombreAutor);
         listaEditText.add(nombreTitulo);
-        listaEditText.add(nombreAutor);
 
         uri = Uri.parse("vacía");
+
+        Bundle bundleDiagrama = getIntent().getExtras();
+        if(bundleDiagrama != null){
+            nombreUsuario= bundleDiagrama.getString("usuario");
+        }
+
+        if(!nombreUsuario.equals("Android")){
+            usuario.setVisibility(View.VISIBLE);
+            usuario.setText(nombreUsuario);
+            nombreAutor.setVisibility(View.INVISIBLE);
+        }else{
+            listaEditText.add(nombreAutor);
+        }
 
     }
 
@@ -237,8 +251,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
         finish();
         super.onBackPressed();
     }
@@ -253,7 +265,11 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         String codigo = "vieneVacío";
         Intent intentDiagrama = new Intent(this, Diagrama.class);
         intentDiagrama.putExtra("tituloMando", nombreTitulo.getText().toString());
-        intentDiagrama.putExtra("autorMando", nombreAutor.getText().toString());
+        if(!nombreUsuario.equals("Android")) {
+            intentDiagrama.putExtra("autorMando", nombreUsuario);
+        }else{
+            intentDiagrama.putExtra("autorMando", nombreAutor.getText().toString());
+        }
         if(!TextUtils.isEmpty(url) && !url.trim().matches("") && url.substring(0,12).equals("https://raw.")) {
             try {
                 codigo = escribirEnFS(url);
