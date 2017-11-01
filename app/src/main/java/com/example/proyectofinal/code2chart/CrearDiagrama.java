@@ -34,9 +34,12 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
     private Button generar, obtenerUri, eliminarUri;
     private EditText nombreUrl, nombreTitulo, nombreAutor;
     private ImageView icono;
-    private TextView uriTexto, usuario;
+    private TextView uriTexto;
     private static final int FILE_SELECT_CODE = 0;
     private String url, nombreUsuario;
+
+    private ArrayList<String> titulos = new ArrayList<>();
+    private ArrayList<String> autores = new ArrayList<>();
 
     private String tipo = "nada";
     private String archivo = "Seleccionar archivo";
@@ -61,8 +64,6 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         uriTexto = (TextView) findViewById(R.id.uri);
         icono = (ImageView) findViewById(R.id.iconoTipo);
 
-        usuario = (TextView) findViewById(R.id.nombreUsuario);
-
         nombreUrl = (EditText) findViewById(R.id.url);
 
         nombreTitulo = (EditText) findViewById(R.id.nombreTitulo);
@@ -74,14 +75,12 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         Bundle bundleDiagrama = getIntent().getExtras();
         if(bundleDiagrama != null){
             nombreUsuario= bundleDiagrama.getString("usuario");
+            titulos = (ArrayList<String>) bundleDiagrama.get("titulos");
+            autores = (ArrayList<String>) bundleDiagrama.get("autores");
         }
 
-        if(!nombreUsuario.equals("Android")){
-            usuario.setVisibility(View.VISIBLE);
-            usuario.setText(nombreUsuario);
-            nombreAutor.setVisibility(View.INVISIBLE);
-        }else{
-            listaEditText.add(nombreAutor);
+        if(!nombreUsuario.equals("Android")) {
+            nombreAutor.setText(nombreUsuario);
         }
 
     }
@@ -167,7 +166,9 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.generar:
                 if(validarEditText(listaEditText)){
-                    this.enviarOnClick(v);
+                    if(archivoExistente(titulos, autores)){
+                        this.enviarOnClick(v);
+                    }
                 }
                 break;
             case R.id.eliminarUri:
@@ -180,6 +181,19 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
                 seleccionarIcono();
                 break;
         }
+    }
+
+    public boolean archivoExistente(ArrayList<String> losTitulos, ArrayList<String> losAutores){
+        boolean seEncuentra = true;
+        for(int i =  0; i < losTitulos.size(); i++){
+            if(losTitulos.get(i).equals(nombreTitulo.getText().toString())
+                    && losAutores.get(i).equals(nombreAutor.getText().toString())){
+                seEncuentra = false;
+                Toast.makeText(this, "Ya existe un archivo con esos datos", Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
+        return seEncuentra;
     }
 
     private boolean validarEditText(ArrayList<EditText> textos){

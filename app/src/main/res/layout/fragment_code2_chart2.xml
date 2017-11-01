@@ -1,0 +1,39 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fragmentsAboutApp.Code2ChartFragment"
+    android:padding="5dp"
+    android:background="@color/colorBackground">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Aplicación"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textSize="35dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/colorPrimary"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="210dp"
+        android:src="@drawable/wallpaper_c2c"
+        android:layout_marginTop="60dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Code2Chart es una herramienta que le permite al usuario generar diagramas de flujo, a partir de un archivo de codigo, de forma simple e intuitiva.
+
+Para el ambito estudiantil aporta una herramienta didactica y que facilita el aprendizaje de un lenguaje de programacion a traves de diagramas de flujo estandar.
+
+En el ambito empresarial sirve como un mecanismo que automatiza la generacion de documentacion, dando como resultado un documento visual y fiable"
+        android:textSize="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="285dp"/>
+</FrameLayout>

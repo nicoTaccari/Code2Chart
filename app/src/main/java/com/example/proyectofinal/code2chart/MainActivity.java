@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ImageView imagenUsuario;
     private TextView nombreUsuario, correoUsuario;
 
+    private ArrayList<String> titulos = new ArrayList<>();
+    private ArrayList<String> autores = new ArrayList<>();
+
     private AlertDialog dialog;
     private EditText nuevoTitulo, nuevoAutor;
 
@@ -85,8 +88,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                for(int i = 0; i < archivos.size(); i++){
+                    titulos.add(archivos.get(i).getTitulo().toString());
+                    autores.add(archivos.get(i).getAutor().toString());
+                }
                 Intent intent = new Intent(MainActivity.this, CrearDiagrama.class);
                 intent.putExtra("usuario", nombreUsuario.getText().toString());
+                intent.putStringArrayListExtra("titulos", titulos);
+                intent.putStringArrayListExtra("autores", autores);
                 onStop();
                 startActivity(intent);
             }
@@ -198,8 +207,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         switch (item.getItemId()){
+            case R.id.aboutApp:
+                Intent aboutUs = new Intent(this, SobreAppActivity.class);
+                startActivity(aboutUs);
+                break;
             case R.id.aboutUs:
-
                 break;
             default:
                 break;
@@ -339,6 +351,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     View mView = getLayoutInflater().inflate(R.layout.dialog_edit, null);
                     nuevoTitulo = (EditText) mView.findViewById(R.id.nuevoTitulo);
                     nuevoAutor = (EditText) mView.findViewById(R.id.nuevoAutor);
+                    nuevoTitulo.setText(toDeleteItems.get(0).getTitulo().toString());
+                    nuevoAutor.setText(toDeleteItems.get(0).getAutor().toString());
                     Button aceptar = (Button) mView.findViewById(R.id.aceptar);
                     Button cancelar = (Button) mView.findViewById(R.id.cancelar);
                     aceptar.setOnClickListener(new View.OnClickListener() {

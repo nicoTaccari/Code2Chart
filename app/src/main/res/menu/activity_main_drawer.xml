@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Google Login">
+    <item android:title="Información">
         <menu>
             <item
+                android:id="@+id/aboutApp"
+                android:icon="@mipmap/logo"
+                android:title="Sobre la aplicación" />
+
+            <item
                 android:id="@+id/aboutUs"
-                android:icon="@drawable/ic_menu_slideshow"
+                android:icon="@android:drawable/ic_menu_myplaces"
                 android:title="Sobre nosotros" />
 
         </menu>

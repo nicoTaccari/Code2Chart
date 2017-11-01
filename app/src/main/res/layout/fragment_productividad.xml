@@ -1,0 +1,37 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fragmentsAboutApp.ProductividadFragment"
+    android:padding="5dp"
+    android:background="@color/colorBackground">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Productividad"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textSize="35dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/colorPrimary"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:src="@drawable/productividad"
+        android:layout_marginTop="25dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Al poder generar documentacion de forma automtizada y sin mucho esfuerzo indirectamente estara impactando en una suba de la productividad del profesional.
+
+De esta forma este ahorrara tiempo en la tare de documentar, pudiendolo utilizar para otra actividad de mayor prioridad."
+        android:textSize="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="285dp"/>
+
+</FrameLayout>
