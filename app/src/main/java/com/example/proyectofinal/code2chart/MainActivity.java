@@ -319,16 +319,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+    public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
         switch (item.getItemId()){
             case (R.id.action_delete):
-                for (Archivo arch: toDeleteItems) {
-                    File deletef = new File(arch.getUri().getPath());
-                    deletef.delete();
-                    archivos.remove(arch);
-                }
-                Toast.makeText(this, "Eliminación Correcta", Toast.LENGTH_SHORT).show();
-                mode.finish();
+                AlertDialog.Builder mBuilderDelete = new AlertDialog.Builder(MainActivity.this);
+                View mViewDelete = getLayoutInflater().inflate(R.layout.dialog_delete, null);
+                Button aceptarDelete = (Button) mViewDelete.findViewById(R.id.aceptar);
+                Button cancelarDelete = (Button) mViewDelete.findViewById(R.id.cancelar);
+                aceptarDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        for (Archivo arch: toDeleteItems) {
+                            File deletef = new File(arch.getUri().getPath());
+                            deletef.delete();
+                            archivos.remove(arch);
+                        }
+                        Toast.makeText(getApplicationContext(), "Eliminación Correcta", Toast.LENGTH_SHORT).show();
+                        mode.finish();
+                        dialog.dismiss();
+                    }
+                });
+                cancelarDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                mBuilderDelete.setView(mViewDelete);
+                dialog = mBuilderDelete.create();
+                dialog.show();
                 return true;
             case (R.id.action_share):
                 ArrayList<Uri> uris = new ArrayList<>();
