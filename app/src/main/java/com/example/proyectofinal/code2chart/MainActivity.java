@@ -54,6 +54,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 
+import fragmentsAboutApp.SobreAppActivity;
+import fragmentsAboutUs.SobreNosotrosActivity;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AbsListView.MultiChoiceModeListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private ListView listaDeArchivos;
@@ -208,10 +211,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (item.getItemId()){
             case R.id.aboutApp:
-                Intent aboutUs = new Intent(this, SobreAppActivity.class);
-                startActivity(aboutUs);
+                Intent aboutApp = new Intent(this, SobreAppActivity.class);
+                startActivity(aboutApp);
                 break;
             case R.id.aboutUs:
+                Intent aboutUs = new Intent(this, SobreNosotrosActivity.class);
+                startActivity(aboutUs);
                 break;
             default:
                 break;

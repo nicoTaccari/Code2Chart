@@ -5,10 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 public class ImagenActivity extends Activity {
 
     private String uri;
     private ImageView imagen;
+    PhotoViewAttacher pAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,9 @@ public class ImagenActivity extends Activity {
         imagen = (ImageView) findViewById(R.id.imagenDiagrama);
 
         imagen.setImageURI(Uri.parse(uri));
+
+        pAttacher = new PhotoViewAttacher(imagen);
+        pAttacher.update();
 
     }
 }

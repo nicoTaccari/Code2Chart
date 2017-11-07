@@ -1,0 +1,38 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="fragmentsAboutUs.RodriFragment">
+
+    <ImageView
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:src="@drawable/fotocvrodri"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rodrigo Vazquez"
+        android:textSize="25dp"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="28dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edad: 22 años\nFecha de nacimiento: 02/03/1995\nMail: rodovazquez1@gmail.com"
+        android:layout_marginTop="65dp"
+        android:layout_marginLeft="145dp"
+        android:textSize="14dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estudios:\nUTN - Ingeniero en Sistemas de Información\n\nRoles en Code2Chart:\n-Desarrollador Web\n-Desarrollador Mobile\n-Tester\n\nHobbies: tocar la guitarra y bajo"
+        android:layout_marginTop="190dp"
+        android:layout_marginLeft="40dp"/>
+
+</FrameLayout>
