@@ -9,8 +9,7 @@
         android:id="@+id/code2Chart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Code2Chart"
-        android:textStyle="bold"
+        android:text="Eliminar archivo"
         android:layout_centerHorizontal="true"
         android:textSize="25dp"
         android:textColor="@color/colorPrimary"/>
@@ -21,9 +20,9 @@
         android:layout_height="wrap_content"
         android:text="¿Estás seguro que querés eliminar el/los archivo/s?"
         android:textStyle="bold"
+        android:textSize="12dp"
         android:layout_centerHorizontal="true"
-        android:textSize="15dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:textColor="@color/colorPrimaryDark"/>
 
     <Button

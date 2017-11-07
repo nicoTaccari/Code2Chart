@@ -118,7 +118,6 @@ public class XmlBuilder {
 				linksElement.appendChild(childLink);
 			}
 		}
-
 		return this;
 	}
 /*
@@ -143,19 +142,12 @@ public class XmlBuilder {
 	
 	public XmlBuilder build() {
 		try {
-
-            //OutputStreamWriter osw = new OutputStreamWriter(this.file);
-
+			//TODO cambiar path del file
 			result = new StreamResult(this.file);
-
 			transformer.transform(source, result);
-
-            //osw.write();
-            //osw.flush();
-            //osw.close();
 		} catch (TransformerException e) {
-            new UnableToCreateFileException("Something went wrong");
-        }
+			new UnableToCreateFileException("mario");
+		}
 		return this;
 	}
 	

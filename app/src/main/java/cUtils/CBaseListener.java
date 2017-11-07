@@ -2,9 +2,9 @@ package cUtils;
 // Generated from C.g4 by ANTLR 4.3
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.jetbrains.annotations.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This class provides an empty implementation of {@link CListener},

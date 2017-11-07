@@ -152,4 +152,10 @@
         android:singleLine="true"
         android:textColor="@color/colorPrimaryDark" />
 
+    <com.mindfusion.diagramming.DiagramView
+        android:id="@+id/diag_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"/>
+
 </RelativeLayout>

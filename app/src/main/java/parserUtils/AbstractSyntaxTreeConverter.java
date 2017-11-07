@@ -19,7 +19,7 @@ public class AbstractSyntaxTreeConverter {
     private String content;
     
     /**
-     * All child nodes of this AST.
+     * All  child nodes of this AST.
      */
     private final List<AbstractSyntaxTreeConverter> children;
     
@@ -31,6 +31,10 @@ public class AbstractSyntaxTreeConverter {
     
     public void addChildren(AbstractSyntaxTreeConverter ast) {
     	this.children.add(ast);
+    }
+    
+    public void addChildren(AbstractSyntaxTreeConverter ast, int posicion) {
+    	this.children.add(posicion, ast);
     }
 //END    
     
@@ -169,30 +173,30 @@ public class AbstractSyntaxTreeConverter {
     }
 
     public String getChildrenContent() {
-    	return getFullContent(this.getChildren());
+        String lista = new String();
+
+        for(int i = 0; i < this.getChildren().size(); i++){
+            lista = lista + this.getChildren().get(i).getTokenContent();
+        }
+
+    	return lista;
     }
     
 	private String getTokenContent() {
-		String s;
+		String s = new String();
 		
 		if(this.getPayload() instanceof Token){
 			
 			Token token = (Token) this.payload;
 			s = token.getText();
 		} else {
-			s = getFullContent(this.children);
+
+            for(int i = 0; i < this.children.size(); i++){
+                s = s + this.children.get(i).getTokenContent();
+            }
 		}
 		return s;
 	}
-	
-	public String getFullContent(List<AbstractSyntaxTreeConverter> children){
-        String s = new String();
-
-        for (AbstractSyntaxTreeConverter child : children) {
-            s = s.concat(child.getTokenContent());
-        }
-        return s;
-    }
 	
 	public int findChildren(String key, int repeticiones) {
 		int i, tries = 0;

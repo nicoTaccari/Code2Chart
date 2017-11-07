@@ -1,7 +1,8 @@
 package cUtils;
 // Generated from C.g4 by ANTLR 4.3
-import org.jetbrains.annotations.NotNull;
+
 import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface defines a complete listener for a parse tree produced by

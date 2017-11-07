@@ -4,12 +4,11 @@ import java.util.LinkedList;
 
 public class ParserToXmlAdapter {
 	LinkedList<ASTContainer> list;
-
+	
 	public ParserToXmlAdapter() {
 		list = new LinkedList<>();
 	}
-
-	public LinkedList<ASTContainer> getConvertedList(AbstractSyntaxTreeConverter ast) {
+	public LinkedList<ASTContainer> getConvertedList(AbstractSyntaxTreeConverter ast){
 		/*
 		LinkedList<Integer> astCont = new LinkedList<Integer>();
 		
@@ -24,7 +23,7 @@ public class ParserToXmlAdapter {
 		*/
 		return list;
 	}
-
+	
 	private void convert(AbstractSyntaxTreeConverter ast) {
 		if (ast.getType() != null) {
 			if(ast.getType().substring(0,3).equals("fin")){
@@ -36,5 +35,6 @@ public class ParserToXmlAdapter {
 		for (AbstractSyntaxTreeConverter c : ast.getChildren()) {
 			convert(c);
 		}
+
 	}
 }
