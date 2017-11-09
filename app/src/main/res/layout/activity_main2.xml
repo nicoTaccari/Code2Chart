@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.proyectofinal.code2chart.CrearDiagrama">
+    tools:context="com.example.proyectofinal.code2chart.CrearDiagrama"
+    android:clickable="true"
+    android:focusableInTouchMode="true" >
 
     <TextView
         android:id="@+id/detalles"
@@ -58,6 +60,7 @@
         android:textSize="15dp"
         android:text="Seleccionar archivo"
         android:gravity="center"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="65dp"
         android:layout_marginTop="70dp"/>
 
@@ -94,7 +97,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="14dp"
-        android:maxLength="25"/>
+        android:maxLength="25"
+        android:textColorHint="#FF0000"/>
 
     <TextView
         android:id="@+id/autor"
@@ -119,7 +123,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_alignParentBottom="true"
-        android:maxLength="25"/>
+        android:maxLength="25"
+        android:textColorHint="#FF0000"/>
 
     <Button
         android:id="@+id/generar"
@@ -136,11 +141,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="o colocar GitHub url"
+        android:text="Ó"
         android:textSize="15dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="160dp"/>
+        android:layout_marginTop="150dp"/>
 
     <EditText
         android:id="@+id/url"
@@ -150,6 +155,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="190dp"
         android:singleLine="true"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textColor="@color/colorPrimaryDark"
+        android:hint="Ingrese la URL de su archivo raw de Github"/>
 
 </RelativeLayout>

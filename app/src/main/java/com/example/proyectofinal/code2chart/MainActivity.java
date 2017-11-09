@@ -494,8 +494,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResult(@NonNull Status status) {
                 if(status.isSuccess()){
-                    nombreUsuario.setText("Android");
-                    correoUsuario.setText("android@android.com");
+                    nombreUsuario.setText("Code2Chart");
+                    correoUsuario.setText("code2chart@code2chart.com");
                     imagenUsuario.setImageResource(R.drawable.common_google_signin_btn_icon_light);
                 }else{
                     Toast.makeText(getApplicationContext(),"No se pudo cerrar sesion",Toast.LENGTH_SHORT).show();

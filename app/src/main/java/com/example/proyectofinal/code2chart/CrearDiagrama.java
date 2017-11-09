@@ -1,5 +1,6 @@
 package com.example.proyectofinal.code2chart;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -80,9 +82,36 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
             autores = (ArrayList<String>) bundleDiagrama.get("autores");
         }
 
-        if(!nombreUsuario.equals("Android")) {
+        if(!nombreUsuario.equals("Code2Chart")) {
             nombreAutor.setText(nombreUsuario);
         }
+
+        nombreUrl.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+
+        nombreTitulo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+
+        nombreAutor.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
 
     }
 
@@ -203,7 +232,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
             EditText currentField = textos.get(i);
             String string = currentField.getText().toString();
             if(TextUtils.isEmpty(string) && string.trim().matches("")){
-                currentField.setError("Complete el campo");
+                currentField.setHint("Complete el campo");
                 error = false;
             }
         }
@@ -280,7 +309,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         String codigo = "vieneVacío";
         Intent intentDiagrama = new Intent(this, Diagrama.class);
         intentDiagrama.putExtra("tituloMando", nombreTitulo.getText().toString());
-        if(!nombreUsuario.equals("Android")) {
+        if(!nombreUsuario.equals("Code2Chart")) {
             intentDiagrama.putExtra("autorMando", nombreUsuario);
         }else{
             intentDiagrama.putExtra("autorMando", nombreAutor.getText().toString());
@@ -323,6 +352,11 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         reader.close();
 
         return completo;
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
