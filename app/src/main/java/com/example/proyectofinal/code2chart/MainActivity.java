@@ -352,6 +352,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
                 mBuilderDelete.setView(mViewDelete);
                 dialog = mBuilderDelete.create();
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
                 dialog.show();
                 return true;
             case (R.id.action_share):
@@ -400,6 +402,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
                     mBuilder.setView(mView);
                     dialog = mBuilder.create();
+                    dialog.setCancelable(false);
+                    dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 }else{
                     Toast.makeText(this, "Sólo se puede editar de a un elemento", Toast.LENGTH_SHORT).show();

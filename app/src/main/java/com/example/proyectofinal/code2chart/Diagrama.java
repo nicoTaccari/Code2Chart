@@ -468,6 +468,8 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         View mViewDelete = getLayoutInflater().inflate(R.layout.dialogprogreso, null);
         mBuilderDelete.setView(mViewDelete);
         dialog = mBuilderDelete.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
