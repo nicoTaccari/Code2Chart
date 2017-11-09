@@ -97,7 +97,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="14dp"
-        android:maxLength="25"
+        android:maxLength="24"
         android:textColorHint="#FF0000"/>
 
     <TextView
@@ -123,20 +123,18 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_alignParentBottom="true"
-        android:maxLength="25"
+        android:maxLength="24"
         android:textColorHint="#FF0000"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/generar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Generar"
-        android:textAllCaps="false"
-        android:background="@color/colorAccent"
-        android:textColor="@color/colorBackground"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/round_button"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:src="@mipmap/play"/>
 
     <TextView
         android:layout_width="wrap_content"

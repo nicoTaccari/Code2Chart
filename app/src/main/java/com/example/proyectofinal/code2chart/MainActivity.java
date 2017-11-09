@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String autorArchivo = st.nextToken();
 
             Archivo archivo = new Archivo(tituloArchivo, autorArchivo);
-            archivo.setUri(Uri.fromFile(getFileStreamPath(nombreArchivo)));
+            archivo.setUri(Uri.parse(getFileStreamPath(nombreArchivo).toString()));
 
             archivos.add(archivo);
 
@@ -384,6 +384,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onClick(View v) {
                             if(validarEditText(nuevoTitulo, nuevoAutor)){
                                 MainActivity.this.onStop();
+                                setFileName(nuevoTitulo.getText().toString(), nuevoAutor.getText().toString(), toDeleteItems.get(0));
+                                MainActivity.this.onRestart();
+                                dialog.dismiss();
+                                mode.finish();
+                                Toast.makeText(MainActivity.this, "Archivo editado con éxito", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -403,6 +408,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 return false;
         }
+    }
+
+    private void setFileName(String titulo, String autor, Archivo archivo) {
+        String uri = archivo.getUri().toString();
+        String currentFileName = uri.substring(uri.lastIndexOf("/"), uri.length());
+        currentFileName = currentFileName.substring(1);
+
+        File directory = new File(getFilesDir().toString());
+        File from      = new File(directory, currentFileName);
+        File to        = new File(directory, titulo + "." + autor + ".png");
+        from.renameTo(to);
     }
 
     private boolean validarEditText(EditText nuevoTitulo, EditText nuevoAutor) {

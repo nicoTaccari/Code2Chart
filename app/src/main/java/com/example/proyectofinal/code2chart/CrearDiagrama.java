@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +34,8 @@ import java.util.regex.Pattern;
 
 public class CrearDiagrama extends AppCompatActivity implements View.OnClickListener{
 
-    private Button generar, obtenerUri, eliminarUri;
+    private ImageButton generar;
+    private Button obtenerUri, eliminarUri;
     private EditText nombreUrl, nombreTitulo, nombreAutor;
     private ImageView icono;
     private TextView uriTexto;
@@ -55,7 +57,7 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_main2);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        generar = (Button) findViewById(R.id.generar);
+        generar = (ImageButton) findViewById(R.id.generar);
         generar.setOnClickListener(this);
 
         obtenerUri = (Button) findViewById(R.id.obtenerUri);
@@ -232,9 +234,10 @@ public class CrearDiagrama extends AppCompatActivity implements View.OnClickList
             EditText currentField = textos.get(i);
             String string = currentField.getText().toString();
             if(TextUtils.isEmpty(string) && string.trim().matches("")){
-                currentField.setHint("Complete el campo");
+                currentField.setHint("Este campo es obligatorio");
                 error = false;
             }
+
         }
 
         url = nombreUrl.getText().toString();

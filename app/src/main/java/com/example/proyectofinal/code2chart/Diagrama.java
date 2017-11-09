@@ -9,7 +9,7 @@ import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -52,7 +52,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class Diagrama extends AppCompatActivity implements View.OnClickListener {
 
     private DiagramView diagramView;
-    private Button guardar, descartar;
+    private ImageButton guardar, descartar;
     private Diagram diagram;
 
     private ArrayList<ContainerNode> listaDeBucles = new ArrayList<>();
@@ -87,10 +87,10 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
         diagramView = (DiagramView)findViewById(R.id.diag_view);
 
-        descartar = (Button) findViewById(R.id.descartar);
+        descartar = (ImageButton) findViewById(R.id.descartar);
         descartar.setOnClickListener(this);
 
-        guardar = (Button) findViewById(R.id.guardar);
+        guardar = (ImageButton) findViewById(R.id.guardar);
         guardar.setOnClickListener(this);
 
         imagen = (ImageView) findViewById(R.id.imagen);
