@@ -2,14 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="fragmentsAboutUs.NicoFragment">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="135dp"
         android:layout_height="135dp"
         android:src="@drawable/fotocvnico"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="5dp"/>
+        android:layout_marginLeft="5dp"
+        app:border_color="@color/colorPrimary"
+        app:border_width="3dp" />
 
     <TextView
         android:layout_width="wrap_content"
