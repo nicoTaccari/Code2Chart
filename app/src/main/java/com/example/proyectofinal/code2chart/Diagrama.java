@@ -3,8 +3,10 @@ package com.example.proyectofinal.code2chart;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -57,7 +59,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
     private ArrayList<ArrayList<Object>> listasDeNodosParaBucles = new ArrayList<>();
 
     private ImageView imagen;
-    private HashMap<String, DiagramNode> nodeMap = new HashMap<String, DiagramNode>();
+    private HashMap<String, DiagramNode> nodeMap = new HashMap<>();
     private RectF medidaDiagrama;
 
     private PhotoViewAttacher pAttacher;
@@ -71,7 +73,11 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
 
     private String uri, titulo, autor, codigo;
 
+    private Bitmap imagenPrincipal;
+
     private String xmlName = null;
+    String magia = null;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,34 +106,57 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         }
 
         diagram = diagramView.getDiagram();
+
         diagram.setShadowsStyle(ShadowsStyle.None);
 
-        try {
-            loadGraph(magia(uri), diagram);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        progressBar();
 
-        armarElLayout(diagram);
+        (new AsyncTask<Void, Void, Void>() {
 
-        for(int i = listaDeBucles.size()-1; i >= 0; --i){
-            for (int k = 0; k < listasDeNodosParaBucles.get(i).size(); ++k) {
-                listaDeBucles.get(i).add((DiagramNode) listasDeNodosParaBucles.get(i).get(k));
+            @Override
+            protected void onPreExecute() {
+                try {
+                    magia = magia(uri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                super.onPreExecute();
             }
-            armarElLayout(diagram);
-        }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    loadGraph(magia, diagram);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                armarElLayout(diagram);
+
+                for(int i = listaDeBucles.size()-1; i >= 0; --i){
+                    for (int k = 0; k < listasDeNodosParaBucles.get(i).size(); ++k) {
+                        listaDeBucles.get(i).add((DiagramNode) listasDeNodosParaBucles.get(i).get(k));
+                    }
+                    armarElLayout(diagram);
+                }
+                dialog.dismiss();
+                super.onPostExecute(aVoid);
+            }
+        }).execute();
+
+
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         if (hasFocus) {
             diagramView.zoomToFit();
-            Bitmap bitmap = diagram.createImage();
-            imagen.setImageBitmap(bitmap);
-            diagramView.setVisibility(View.INVISIBLE);
-            imagen.setVisibility(View.VISIBLE);
+            imagenPrincipal = diagram.createImage();
+            imagen.setImageBitmap(imagenPrincipal);
         }
     }
 
@@ -192,7 +221,7 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
         NodeList nodes = root.getElementsByTagName("Node");
         NodeList links = root.getElementsByTagName("Link");
 
-        RectF medidaIncial = new RectF(0, 0, 1000, 1000);
+        RectF medidaIncial = new RectF(0, 0, 5000, 5000);
         diagram.setBounds(medidaIncial);
 
         dibujarLosNodosYClasificarlos(nodes, bounds);
@@ -217,7 +246,9 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
                     DiagramNode target1 = nodeMap.get(idsTarget.get(0));
                     DiagramNode target2 = nodeMap.get(idsTarget.get(1));
                     diagram.getFactory().createDiagramLink(origin, target1).setText("SI");
-                    diagram.getFactory().createDiagramLink(origin, target2).setText("NO");
+                    if(target2!=null) {
+                        diagram.getFactory().createDiagramLink(origin, target2).setText("NO");
+                    }
                     nodosYaLinkeados.add(link.getAttribute("origin"));
                 }
 
@@ -431,4 +462,13 @@ public class Diagrama extends AppCompatActivity implements View.OnClickListener 
             e.printStackTrace();
         }
     }
+
+    public void progressBar(){
+        AlertDialog.Builder mBuilderDelete = new AlertDialog.Builder(this);
+        View mViewDelete = getLayoutInflater().inflate(R.layout.dialogprogreso, null);
+        mBuilderDelete.setView(mViewDelete);
+        dialog = mBuilderDelete.create();
+        dialog.show();
+    }
+
 }
