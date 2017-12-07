@@ -1,13 +1,13 @@
 # Code2Chart
 
 Code2Chart permite tomar como input un programa escrito en un lenguaje de programación determinado
-y generar el diagrama de flujo correspondiente.
+(por ahora solo en C) y generar el diagrama de flujo correspondiente.
 
-El diagrama se genera en un formato conveniente para su posterior edición
-utilizando herramientas online, como ser por ejemplo draw.io.
+El diagrama se genera en un formato png editable desde la app.
 
-Ademas contara con la posibilidad de sincronizarse con google drive para 
-almacenar los diagramas generados.
+Ademas cuenta con la posibilidad de sincronizarse con google drive para 
+almacenar los diagramas generados en la nube.
 
-Estamos desarrollando la App para plataformas Android partiendo de la versión 5.0 en adelante.
-Luego se implementara un solución web.
+La app es compatible hasta la version de Android 5.0 (Lollipop.
+
+Contamos con una Web que provee la misma funcionalidad.
